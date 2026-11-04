@@ -1,14 +1,19 @@
 # Graph Report - Theaterbuehne-Biberbach  (2026-11-04)
 
 ## Corpus Check
-- 10 files · ~2,498 words
+- 11 files · ~755 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 3 file(s) not represented in the graph (top: .css 2, (none) 1)
+- Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .css 2, .ico 1)
 
 ## Summary
-- 100 nodes · 109 edges · 10 communities (9 shown, 1 thin omitted)
+- 99 nodes · 107 edges · 10 communities (9 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `3a0a40d0`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - package.json
@@ -27,8 +32,8 @@
 2. `compilerOptions` - 15 edges
 3. `scripts` - 5 edges
 4. `Webseite Theaterbühne Biberbach` - 5 edges
-5. `react` - 4 edges
-6. `rules` - 3 edges
+5. `rules` - 3 edges
+6. `react` - 3 edges
 7. `react-dom` - 3 edges
 8. `@vitejs/plugin-react` - 3 edges
 9. `vite` - 3 edges
@@ -59,8 +64,8 @@ Cohesion: 0.22
 Nodes (9): dependencies, gsap@^3.15.1, @gsap/react@^2.1.2, lenis@^1.3.27, react-dom@^19.3.1, gsap, @gsap/react, lenis (+1 more)
 
 ### Community 4 - "App.tsx"
-Cohesion: 0.28
-Nodes (3): react@^19.3.1, react, App()
+Cohesion: 0.29
+Nodes (4): react@^19.3.1, react, App(), navItems
 
 ### Community 5 - "Webseite Theaterbühne Biberbach"
 Cohesion: 0.33
@@ -84,12 +89,10 @@ Nodes (3): Entwicklung, Technik, Theaterbühne Biberbach – Webseite
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `App.tsx` to `package.json`?**
-  _High betweenness centrality (0.043) - this node is a cross-community bridge._
-- **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Why does `scripts` connect `scripts` to `package.json`?**
   _High betweenness centrality (0.033) - this node is a cross-community bridge._
+- **Should `package.json` be split into smaller, more focused modules?**
+  _Cohesion score 0.13333333333333333 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.1 - nodes in this community are weakly interconnected._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
