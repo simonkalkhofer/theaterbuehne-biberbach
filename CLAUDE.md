@@ -51,4 +51,6 @@ Neue Skills nur nach Prüfung laut `G:\Claude\CLAUDE.md` (SkillSpector) hinzufü
 
 - `prefers-reduced-motion` respektieren (`gsap.matchMedia()`).
 - Mobile first, barrierearm (Alt-Texte, Kontraste, semantisches HTML).
+- GitHub: https://github.com/simonkalkhofer/theaterbuehne-biberbach (privat, Branch `main`).
+  Push über Git Credential Manager (`git push`); die gh CLI ist installiert, aber nicht angemeldet.
 - Git: kleine Commits auf Deutsch, `graphify-out/` vor dem Commit aktualisieren und mitcommitten.
