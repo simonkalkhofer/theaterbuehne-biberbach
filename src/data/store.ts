@@ -23,8 +23,15 @@ export interface Play {
   id: string
   year: number
   title: string
+  /** Text zum Stück – wird erst auf der Detailseite angezeigt */
   description: string
-  photo: string
+  /** IDs der Galerie-Bilder im Bild-Speicher (IndexedDB), in Anzeigereihenfolge */
+  photos: string[]
+}
+
+/** Datei-Format für Export/Import: Daten + Galerie-Bilder als Data-URLs */
+export interface ExportFile extends SiteData {
+  images?: Record<string, string>
 }
 
 export interface SiteData {
@@ -41,8 +48,9 @@ export const uid = (): string =>
     ? crypto.randomUUID()
     : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
 
-const member = (name: string, board = false, role = '', email = ''): Member => ({
-  id: uid(),
+// Standarddaten haben feste IDs, damit Links (z. B. stueck.html?id=…) stabil bleiben.
+const member = (id: string, name: string, board = false, role = '', email = ''): Member => ({
+  id,
   name,
   photo: '',
   board,
@@ -51,11 +59,11 @@ const member = (name: string, board = false, role = '', email = ''): Member => (
 })
 
 const play = (year: number, title: string): Play => ({
-  id: uid(),
+  id: `stueck-${year}`,
   year,
   title,
   description: '',
-  photo: '',
+  photos: [],
 })
 
 /** Standarddaten – Platzhalter für Vorstand/Mitglieder, echte Stücke fürs Archiv. */
@@ -63,16 +71,11 @@ export function defaultData(): SiteData {
   return {
     version: 1,
     members: [
-      member('Name folgt', true, '1. Vorstand'),
-      member('Name folgt', true, '2. Vorstand'),
-      member('Name folgt', true, 'Kassier/in'),
-      member('Name folgt', true, 'Schriftführer/in'),
-      member('Mitglied 1'),
-      member('Mitglied 2'),
-      member('Mitglied 3'),
-      member('Mitglied 4'),
-      member('Mitglied 5'),
-      member('Mitglied 6'),
+      member('vorstand-1', 'Name folgt', true, '1. Vorstand'),
+      member('vorstand-2', 'Name folgt', true, '2. Vorstand'),
+      member('vorstand-3', 'Name folgt', true, 'Kassier/in'),
+      member('vorstand-4', 'Name folgt', true, 'Schriftführer/in'),
+      ...[1, 2, 3, 4, 5, 6].map((n) => member(`mitglied-${n}`, `Mitglied ${n}`)),
     ],
     plays: [
       play(2015, 'Alptraum einer Schwiegermutter'),
@@ -109,7 +112,7 @@ export function normalize(value: SiteData): SiteData {
       year: Number(p.year) || new Date().getFullYear(),
       title: String(p.title ?? '').trim(),
       description: String(p.description ?? '').trim(),
-      photo: typeof p.photo === 'string' ? p.photo : '',
+      photos: Array.isArray(p.photos) ? p.photos.filter((x): x is string => typeof x === 'string') : [],
     })),
   }
 }
@@ -152,11 +155,23 @@ export function resetData(): void {
   window.dispatchEvent(new CustomEvent(CHANGE_EVENT))
 }
 
-export function parseImport(text: string): SiteData {
+export function parseImport(text: string): { data: SiteData; images: Record<string, string> } {
   const parsed: unknown = JSON.parse(text)
   if (!isSiteData(parsed)) throw new Error('Die Datei enthält keine gültigen Webseiten-Daten.')
-  return normalize(parsed)
+  const raw = (parsed as ExportFile).images
+  const images: Record<string, string> = {}
+  if (raw && typeof raw === 'object') {
+    for (const [id, url] of Object.entries(raw)) {
+      if (typeof url === 'string' && /^data:image\/(jpeg|png|webp);base64,/i.test(url)) images[id] = url
+    }
+  }
+  return { data: normalize(parsed), images }
 }
+
+export const findPlay = (data: SiteData, id: string | null): Play | undefined =>
+  id ? data.plays.find((p) => p.id === id) : undefined
+
+export const playUrl = (p: Play): string => `stueck.html?id=${encodeURIComponent(p.id)}`
 
 /** Ruft `render` auf, wenn sich die Daten ändern – auch in anderen Tabs. */
 export function onDataChange(render: () => void): void {

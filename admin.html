@@ -133,14 +133,16 @@
                 <input id="p-title" name="title" required maxlength="120" />
               </div>
               <div class="form-row">
-                <label for="p-desc">Beschreibung</label>
-                <textarea id="p-desc" name="description" maxlength="600"></textarea>
+                <label for="p-desc">Text zum Stück</label>
+                <textarea id="p-desc" name="description" rows="9" maxlength="8000" placeholder="Inhalt, Besetzung, Regie, Aufführungstermine …"></textarea>
+                <span class="form-hint">Leerzeile = neuer Absatz. Wird erst auf der Seite des Stücks angezeigt.</span>
               </div>
               <div class="form-row">
-                <label for="p-photo">Bild</label>
-                <input id="p-photo" name="photo" type="file" accept="image/*" />
-                <img class="photo-preview" alt="Vorschau" data-play-preview hidden />
-                <button class="btn btn--ghost btn--small" type="button" data-play-photo-remove hidden>Bild entfernen</button>
+                <label for="p-photos">Bilder</label>
+                <input id="p-photos" type="file" accept="image/*" multiple />
+                <span class="form-hint">Mehrere Bilder auf einmal auswählbar. Das erste (rot umrandet) wird zuerst gezeigt; mit ‹ › sortieren.</span>
+                <p class="form-hint" data-play-photos-status aria-live="polite"></p>
+                <ul class="gallery-edit" data-play-gallery-edit></ul>
               </div>
               <p class="form-error" role="alert" data-play-error></p>
               <div class="form-actions">

@@ -12,10 +12,13 @@ Sprache: Deutsch (Code-Bezeichner englisch, Seiteninhalte deutsch).
 
 ## Aufbau
 
-- `index.html`, `mitglieder.html`, `archiv.html`, `admin.html` – je eine echte Seite im Projektordner
-  (Kopf- und Fußzeile stehen in jeder HTML-Datei; Änderungen daran in allen vier Dateien machen!)
+- `index.html`, `mitglieder.html`, `archiv.html`, `stueck.html`, `admin.html` – je eine echte Seite im Projektordner
+  (Kopf- und Fußzeile stehen in jeder HTML-Datei; Änderungen daran in allen fünf Dateien machen!)
+- `stueck.html?id=<Stück-ID>` – Detailseite: Text + Bildergalerie + Lightbox (erst hier geladen, nicht in der Übersicht)
 - `src/pages/<seite>.ts` – Skript je Seite; `src/common.ts` – gemeinsam (Lenis, Navigation, Reveal)
-- `src/data/store.ts` – Datenmodell + localStorage (Schlüssel `tbb-data-v1`) + Standarddaten
+- `src/data/store.ts` – Datenmodell + localStorage (Schlüssel `tbb-data-v1`) + Standarddaten (feste IDs, z. B. `stueck-2025`)
+- `src/data/images.ts` – Galerie-Bilder als Blobs in IndexedDB (`tbb-images`); `Play.photos` enthält nur Bild-IDs.
+  Export/Import packt die Bilder als Data-URLs mit in die JSON-Datei.
 - `src/lib/stage.ts` – Miniatur-Theater (Bühne, Vorhang, laufende Figuren) im Hero; `src/lib/image.ts` – Foto-Verkleinerung
 - Logo-Varianten: `src/assets/logos/logo-light.png` (weiß, transparent), `logo-dark.png`, Original-JPG
 - Admin: Passwortschutz nur clientseitig (SHA-256-Hash in `src/pages/admin.ts`) – **kein echter Schutz**;

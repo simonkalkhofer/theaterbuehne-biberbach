@@ -1,16 +1,16 @@
 /**
- * Verkleinert ein hochgeladenes Bild und gibt es als JPEG-Data-URL zurück.
- * So bleiben die Fotos klein genug für den localStorage (~5 MB pro Webseite).
+ * Verkleinert hochgeladene Bilder im Browser, bevor sie gespeichert werden.
  */
-export async function fileToResizedDataUrl(file: File, maxSize = 600, quality = 0.8): Promise<string> {
-  if (!file.type.startsWith('image/')) throw new Error('Bitte eine Bilddatei auswählen.')
+
+async function drawResized(file: File, maxSize: number): Promise<HTMLCanvasElement> {
+  if (!file.type.startsWith('image/')) throw new Error(`„${file.name}“ ist keine Bilddatei.`)
 
   const url = URL.createObjectURL(file)
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const image = new Image()
       image.onload = () => resolve(image)
-      image.onerror = () => reject(new Error('Das Bild konnte nicht gelesen werden.'))
+      image.onerror = () => reject(new Error(`„${file.name}“ konnte nicht gelesen werden.`))
       image.src = url
     })
 
@@ -26,8 +26,25 @@ export async function fileToResizedDataUrl(file: File, maxSize = 600, quality = 
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, w, h)
     ctx.drawImage(img, 0, 0, w, h)
-    return canvas.toDataURL('image/jpeg', quality)
+    return canvas
   } finally {
     URL.revokeObjectURL(url)
   }
+}
+
+/** Kleines Bild als JPEG-Data-URL (für Mitgliederfotos im localStorage). */
+export async function fileToResizedDataUrl(file: File, maxSize = 600, quality = 0.8): Promise<string> {
+  return (await drawResized(file, maxSize)).toDataURL('image/jpeg', quality)
+}
+
+/** Größeres Bild als JPEG-Blob (für Galerien in IndexedDB). */
+export async function fileToResizedBlob(file: File, maxSize = 1600, quality = 0.82): Promise<Blob> {
+  const canvas = await drawResized(file, maxSize)
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('Bild konnte nicht umgewandelt werden.'))),
+      'image/jpeg',
+      quality,
+    ),
+  )
 }

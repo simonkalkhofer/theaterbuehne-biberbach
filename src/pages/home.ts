@@ -1,7 +1,7 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import '../common'
-import { loadData, onDataChange, playsByYear } from '../data/store'
+import { loadData, onDataChange, playsByYear, playUrl } from '../data/store'
 import { prefersReducedMotion, qs } from '../lib/dom'
 import { startStage } from '../lib/stage'
 
@@ -50,8 +50,15 @@ function render(): void {
 
   qs('[data-latest-year]').textContent = latest ? String(latest.year) : '–'
   qs('[data-latest-title]').textContent = latest ? latest.title : 'Bald mehr'
-  qs('[data-latest-desc]').textContent =
-    latest?.description || 'Alle unsere Stücke der letzten Jahre findest du im Archiv.'
+  // nur ein kurzer Anriss – der ganze Text steht auf der Detailseite
+  const text = latest?.description.replace(/\s+/g, ' ').trim() ?? ''
+  qs('[data-latest-desc]').textContent = text
+    ? text.length > 180
+      ? `${text.slice(0, 180).replace(/\s+\S*$/, '')} …`
+      : text
+    : 'Bilder und mehr zu unserem letzten Stück.'
+  const link = qs<HTMLAnchorElement>('[data-latest-link]')
+  link.href = latest ? playUrl(latest) : 'archiv.html'
 }
 
 render()

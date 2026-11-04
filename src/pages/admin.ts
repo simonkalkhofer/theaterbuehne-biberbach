@@ -7,19 +7,30 @@
  */
 import '../common'
 import {
+  blobToDataUrl,
+  clearImages,
+  dataUrlToBlob,
+  getImage,
+  imageUrl,
+  putImage,
+  removeUnusedImages,
+} from '../data/images'
+import {
   defaultData,
   loadData,
   parseImport,
   playsByYear,
+  playUrl,
   resetData,
   saveData,
   uid,
+  type ExportFile,
   type Member,
   type Play,
   type SiteData,
 } from '../data/store'
 import { el, initials, isImageDataUrl, qs } from '../lib/dom'
-import { fileToResizedDataUrl } from '../lib/image'
+import { fileToResizedBlob, fileToResizedDataUrl } from '../lib/image'
 
 /** SHA-256 des Admin-Passworts (Klartext steht bewusst nicht im Code). */
 const PASSWORD_HASH = 'd74d19c2635b79ff2c6159f231a9842e57e4d437f0a8f0df765004690883ea6a'
@@ -290,21 +301,90 @@ function renderMembers(): void {
 // --- Theaterstücke ------------------------------------------------------------
 const pForm = qs<HTMLFormElement>('[data-play-form]')
 const pError = qs('[data-play-error]')
-const pPhoto = photoField(
-  qs<HTMLInputElement>('#p-photo'),
-  qs<HTMLImageElement>('[data-play-preview]'),
-  qs<HTMLButtonElement>('[data-play-photo-remove]'),
-)
+const pPhotosInput = qs<HTMLInputElement>('#p-photos')
+const pPhotosStatus = qs('[data-play-photos-status]')
+const pGalleryList = qs('[data-play-gallery-edit]')
+
+/** Bild-IDs der Galerie im Formular (Reihenfolge = Anzeigereihenfolge). */
+let gallery: string[] = []
+let galleryUrls: string[] = []
+
+async function renderGalleryEdit(): Promise<void> {
+  galleryUrls.forEach((u) => URL.revokeObjectURL(u))
+  galleryUrls = []
+  const urls = await Promise.all(gallery.map(imageUrl))
+  galleryUrls = urls.filter((u): u is string => Boolean(u))
+
+  const tool = (label: string, text: string, onClick: () => void, disabled = false) => {
+    const b = el('button', { type: 'button', 'aria-label': label, title: label, text })
+    b.disabled = disabled
+    b.addEventListener('click', onClick)
+    return b
+  }
+  const move = (i: number, d: number) => {
+    const j = i + d
+    const a = gallery[i]
+    const b = gallery[j]
+    if (a === undefined || b === undefined) return
+    gallery[i] = b
+    gallery[j] = a
+    void renderGalleryEdit()
+  }
+
+  pGalleryList.replaceChildren(
+    ...gallery.map((id, i) => {
+      const url = urls[i]
+      return el(
+        'li',
+        {},
+        url ? el('img', { src: url, alt: `Bild ${i + 1}` }) : el('div', { class: 'photo-preview', text: '?' }),
+        el(
+          'div',
+          { class: 'gallery-edit__tools' },
+          tool(`Bild ${i + 1} nach vorne`, '‹', () => move(i, -1), i === 0),
+          tool(`Bild ${i + 1} entfernen`, '×', () => {
+            gallery = gallery.filter((x) => x !== id)
+            void renderGalleryEdit()
+          }),
+          tool(`Bild ${i + 1} nach hinten`, '›', () => move(i, 1), i === gallery.length - 1),
+        ),
+      )
+    }),
+  )
+  const submitLabel = qs('[data-play-submit]').textContent ?? 'Speichern'
+  pPhotosStatus.textContent = gallery.length
+    ? `${gallery.length} Bild(er) – übernommen wird erst mit „${submitLabel}“.`
+    : ''
+}
+
+pPhotosInput.addEventListener('change', async () => {
+  const files = [...(pPhotosInput.files ?? [])]
+  pPhotosInput.value = ''
+  if (files.length === 0) return
+  pPhotosInput.disabled = true
+  try {
+    for (const [i, file] of files.entries()) {
+      pPhotosStatus.textContent = `Bilder werden verarbeitet … ${i + 1} / ${files.length}`
+      gallery.push(await putImage(await fileToResizedBlob(file)))
+    }
+  } catch (err) {
+    alert(err instanceof Error ? err.message : 'Bild konnte nicht gespeichert werden.')
+  } finally {
+    pPhotosInput.disabled = false
+    void renderGalleryEdit()
+  }
+})
 
 function resetPlayForm(): void {
   pForm.reset()
   ;(pForm.elements.namedItem('id') as HTMLInputElement).value = ''
   ;(pForm.elements.namedItem('year') as HTMLInputElement).value = String(new Date().getFullYear())
-  pPhoto.set('')
+  gallery = []
   pError.textContent = ''
   qs('[data-play-form-title]').textContent = 'Theaterstück hinzufügen'
   qs('[data-play-submit]').textContent = 'Hinzufügen'
   qs('[data-play-cancel]').hidden = true
+  void renderGalleryEdit()
 }
 
 function editPlay(p: Play): void {
@@ -313,14 +393,18 @@ function editPlay(p: Play): void {
   ;(f.namedItem('year') as HTMLInputElement).value = String(p.year)
   ;(f.namedItem('title') as HTMLInputElement).value = p.title
   ;(f.namedItem('description') as HTMLTextAreaElement).value = p.description
-  pPhoto.set(p.photo)
+  gallery = [...p.photos]
   pError.textContent = ''
   qs('[data-play-form-title]').textContent = 'Theaterstück bearbeiten'
   qs('[data-play-submit]').textContent = 'Speichern'
   qs('[data-play-cancel]').hidden = false
+  void renderGalleryEdit()
   pForm.scrollIntoView({ behavior: 'smooth', block: 'start' })
   qs<HTMLInputElement>('#p-title').focus({ preventScroll: true })
 }
+
+/** Bilder, die zu keinem Stück mehr gehören, aus dem Bild-Speicher löschen. */
+const cleanupImages = () => removeUnusedImages(data.plays.flatMap((p) => p.photos)).catch(() => {})
 
 pForm.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -341,49 +425,72 @@ pForm.addEventListener('submit', (e) => {
     year,
     title,
     description: (f.namedItem('description') as HTMLTextAreaElement).value.trim(),
-    photo: pPhoto.get(),
+    photos: [...gallery],
   }
   const plays = id ? data.plays.map((p) => (p.id === id ? entry : p)) : [...data.plays, entry]
   if (persist({ ...data, plays }, id ? 'Stück gespeichert.' : 'Stück hinzugefügt.')) {
+    void cleanupImages()
     resetPlayForm()
     renderPlays()
   }
 })
 
-qs('[data-play-cancel]').addEventListener('click', resetPlayForm)
+qs('[data-play-cancel]').addEventListener('click', () => {
+  resetPlayForm()
+  void cleanupImages()
+})
 
 function renderPlays(): void {
   const list = qs('[data-play-admin-list]')
   const sorted = playsByYear(data.plays)
   qs('[data-play-count]').textContent = String(sorted.length)
   list.replaceChildren(
-    ...sorted.map((p) =>
-      el(
+    ...sorted.map((p) => {
+      const view = el('a', {
+        class: 'btn btn--ghost btn--small',
+        href: playUrl(p),
+        target: '_blank',
+        rel: 'noopener',
+        text: 'Ansehen',
+      })
+      const actions = listActions(
+        () => editPlay(p),
+        () => {
+          if (!confirm(`„${p.title}“ (${p.year}) mit allen Bildern wirklich löschen?`)) return
+          if (persist({ ...data, plays: data.plays.filter((x) => x.id !== p.id) }, 'Stück gelöscht.')) {
+            void cleanupImages()
+            resetPlayForm()
+            renderPlays()
+          }
+        },
+        p.title,
+      )
+      actions.prepend(view)
+      const info = [
+        String(p.year),
+        `${p.photos.length} Bild${p.photos.length === 1 ? '' : 'er'}`,
+        p.description ? 'mit Text' : 'kein Text',
+      ]
+      return el(
         'li',
         {},
-        isImageDataUrl(p.photo)
-          ? el('img', { class: 'admin-list__thumb', src: p.photo, alt: '' })
-          : el('div', { class: 'admin-list__thumb admin-list__thumb--year', text: String(p.year).slice(2) }),
-        el('div', { class: 'admin-list__meta' }, el('strong', { text: p.title }), el('span', { text: String(p.year) })),
-        listActions(
-          () => editPlay(p),
-          () => {
-            if (!confirm(`„${p.title}“ (${p.year}) wirklich löschen?`)) return
-            if (persist({ ...data, plays: data.plays.filter((x) => x.id !== p.id) }, 'Stück gelöscht.')) {
-              resetPlayForm()
-              renderPlays()
-            }
-          },
-          p.title,
-        ),
-      ),
-    ),
+        el('div', { class: 'admin-list__thumb admin-list__thumb--year', text: String(p.year).slice(2) }),
+        el('div', { class: 'admin-list__meta' }, el('strong', { text: p.title }), el('span', { text: info.join(' · ') })),
+        actions,
+      )
+    }),
   )
 }
 
 // --- Export / Import / Zurücksetzen ------------------------------------------
-qs('[data-export]').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+qs('[data-export]').addEventListener('click', async () => {
+  const images: Record<string, string> = {}
+  for (const id of new Set(data.plays.flatMap((p) => p.photos))) {
+    const blob = await getImage(id)
+    if (blob) images[id] = await blobToDataUrl(blob)
+  }
+  const file: ExportFile = { ...data, images }
+  const blob = new Blob([JSON.stringify(file)], { type: 'application/json' })
   const a = el('a', {
     href: URL.createObjectURL(blob),
     download: `theaterbuehne-daten-${new Date().toISOString().slice(0, 10)}.json`,
@@ -398,17 +505,24 @@ qs<HTMLInputElement>('[data-import]').addEventListener('change', async (e) => {
   input.value = ''
   if (!file) return
   try {
-    const imported = parseImport(await file.text())
-    if (!confirm(`${imported.members.length} Mitglieder und ${imported.plays.length} Stücke importieren? Der aktuelle Stand wird ersetzt.`)) return
-    if (persist(imported, 'Daten importiert.')) renderAll()
+    const { data: imported, images } = parseImport(await file.text())
+    const count = Object.keys(images).length
+    const question = `${imported.members.length} Mitglieder, ${imported.plays.length} Stücke und ${count} Bilder importieren? Der aktuelle Stand wird ersetzt.`
+    if (!confirm(question)) return
+    for (const [id, url] of Object.entries(images)) await putImage(await dataUrlToBlob(url), id)
+    if (persist(imported, 'Daten importiert.')) {
+      void cleanupImages()
+      renderAll()
+    }
   } catch (err) {
     alert(err instanceof Error ? err.message : 'Import fehlgeschlagen.')
   }
 })
 
-qs('[data-reset]').addEventListener('click', () => {
-  if (!confirm('Alle Änderungen verwerfen und die Standarddaten wiederherstellen?')) return
+qs('[data-reset]').addEventListener('click', async () => {
+  if (!confirm('Alle Änderungen (inkl. aller Bilder) verwerfen und die Standarddaten wiederherstellen?')) return
   resetData()
+  await clearImages()
   data = defaultData()
   toast('Standarddaten wiederhergestellt.')
   renderAll()

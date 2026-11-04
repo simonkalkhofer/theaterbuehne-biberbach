@@ -13,6 +13,7 @@ export default defineConfig({
         index: page('index.html'),
         mitglieder: page('mitglieder.html'),
         archiv: page('archiv.html'),
+        stueck: page('stueck.html'),
         admin: page('admin.html'),
       },
     },

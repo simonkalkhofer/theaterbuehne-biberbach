@@ -2,27 +2,25 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import '../common'
 import { initReveal } from '../common'
-import { loadData, onDataChange, playsByYear, type Play } from '../data/store'
-import { el, isImageDataUrl, prefersReducedMotion, qs } from '../lib/dom'
+import { loadData, onDataChange, playsByYear, playUrl, type Play } from '../data/store'
+import { el, prefersReducedMotion, qs } from '../lib/dom'
 
 let progressTrigger: ScrollTrigger | null = null
 
+/** Übersicht zeigt nur Jahr + Titel; Bilder und Text gibt es erst auf der Detailseite. */
 function item(p: Play): HTMLLIElement {
+  const hint = p.photos.length > 0 ? `${p.photos.length} Bilder & mehr` : 'Zum Stück'
   return el(
     'li',
     { class: 'timeline__item', 'data-reveal': '' },
-    el('span', { class: 'timeline__year', text: String(p.year) }),
     el(
-      'div',
-      { class: 'timeline__card' },
-      isImageDataUrl(p.photo)
-        ? el('div', { class: 'timeline__img' }, el('img', { src: p.photo, alt: `Szene aus „${p.title}“`, loading: 'lazy' }))
-        : null,
+      'a',
+      { class: 'timeline__link', href: playUrl(p) },
+      el('span', { class: 'timeline__year', text: String(p.year) }),
       el(
         'div',
-        {},
-        el('h2', { class: 'timeline__title', text: p.title }),
-        p.description ? el('p', { class: 'timeline__desc', text: p.description }) : null,
+        { class: 'timeline__card' },
+        el('div', {}, el('h2', { class: 'timeline__title', text: p.title }), el('span', { class: 'timeline__more', text: hint })),
       ),
     ),
   )
