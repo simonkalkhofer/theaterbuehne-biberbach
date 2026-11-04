@@ -36,15 +36,15 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1793794946.0,
-    "seen": 1793794956.6742945,
-    "ast_hash": "8c5f196339e750d55c45b19d5a142ea1",
+    "mtime": 1793795524.0,
+    "seen": 1793795528.4385738,
+    "ast_hash": "f5384805ca833d04d2ffc67946511e45",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1793794946.0,
-    "seen": 1793794956.6742964,
-    "ast_hash": "1bcd179e7728d5777be7f1dcc4e9386f",
+    "mtime": 1793795524.0,
+    "seen": 1793795528.4385755,
+    "ast_hash": "1a2842c66fc1880ceeedd05c78599975",
     "semantic_hash": ""
   },
   "index.html": {
@@ -113,12 +113,6 @@
     "ast_hash": "6bf62f3a2f1fa7a7b0bd9c97a3e912f4",
     "semantic_hash": ""
   },
-  "src/lib/particles.ts": {
-    "mtime": 1793794670.0,
-    "seen": 1793794956.6742756,
-    "ast_hash": "1ad919ff13ac081ba77275a77b4aa06f",
-    "semantic_hash": ""
-  },
   "src/pages/admin.ts": {
     "mtime": 1793794820.0,
     "seen": 1793794956.6742773,
@@ -132,9 +126,9 @@
     "semantic_hash": ""
   },
   "src/pages/home.ts": {
-    "mtime": 1793794708.0,
-    "seen": 1793794956.6742814,
-    "ast_hash": "36a701a1b3c0d3bef055b781da4a95cb",
+    "mtime": 1793795466.0,
+    "seen": 1793795528.4385476,
+    "ast_hash": "c7f7d9496f47c10bea82d9908f362bdd",
     "semantic_hash": ""
   },
   "src/pages/mitglieder.ts": {
@@ -171,6 +165,12 @@
     "mtime": 1793794534.0,
     "seen": 1793794956.6743157,
     "ast_hash": "98a949857be4edac912bc6088a22c60c",
+    "semantic_hash": ""
+  },
+  "src/lib/stage.ts": {
+    "mtime": 1793795508.0,
+    "seen": 1793795528.4385412,
+    "ast_hash": "544ade7f32aba630f2fd7b19cc2e092c",
     "semantic_hash": ""
   },
   "package-lock.json": {

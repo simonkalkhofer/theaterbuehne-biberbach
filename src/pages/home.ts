@@ -3,12 +3,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import '../common'
 import { loadData, onDataChange, playsByYear } from '../data/store'
 import { prefersReducedMotion, qs } from '../lib/dom'
-import { startParticles } from '../lib/particles'
+import { startStage } from '../lib/stage'
 
 const reduced = prefersReducedMotion()
 
-// --- Partikel-Netzwerk im Hero ---------------------------------------------
-startParticles(qs<HTMLCanvasElement>('.hero__canvas'), { reducedMotion: reduced })
+// --- Miniatur-Theater im Hero ------------------------------------------------
+startStage(qs<HTMLCanvasElement>('.hero__canvas'), { reducedMotion: reduced })
 
 // --- Intro-Animation ---------------------------------------------------------
 if (!reduced) {

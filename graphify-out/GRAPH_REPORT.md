@@ -1,17 +1,17 @@
 # Graph Report - Theaterbuehne-Biberbach  (2026-11-04)
 
 ## Corpus Check
-- 18 files · ~6,105 words
+- 18 files · ~7,985 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
 ## Summary
-- 169 nodes · 296 edges · 11 communities (9 shown, 2 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.86)
+- 183 nodes · 324 edges · 11 communities (9 shown, 2 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 8 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `16d0aba2`
+- Built from commit: `ce52f737`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,19 +26,19 @@
 - store.ts
 - Theaterbühne Biberbach – Webseite
 - tsconfig.json
-- startParticles
+- startStage
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 17 edges
 2. `qs()` - 15 edges
-3. `compilerOptions` - 15 edges
-4. `el()` - 14 edges
-5. `loadData()` - 12 edges
-6. `renderMembers()` - 12 edges
-7. `renderPlays()` - 12 edges
-8. `isImageDataUrl()` - 9 edges
-9. `render()` - 8 edges
-10. `playsByYear()` - 7 edges
+3. `startStage()` - 15 edges
+4. `compilerOptions` - 15 edges
+5. `el()` - 14 edges
+6. `loadData()` - 12 edges
+7. `renderMembers()` - 12 edges
+8. `renderPlays()` - 12 edges
+9. `isImageDataUrl()` - 9 edges
+10. `render()` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Aufbau` --references--> `el()`  [INFERRED]
@@ -89,9 +89,9 @@ Nodes (18): CHANGE_EVENT, defaultData(), isSiteData(), loadData(), Member, membe
 Cohesion: 0.40
 Nodes (4): Admin-Bereich – wichtig, Entwicklung, Technik, Theaterbühne Biberbach – Webseite
 
-### Community 10 - "startParticles"
-Cohesion: 0.36
-Nodes (7): Node, Options, startParticles(), draw(), loop(), resize(), step()
+### Community 10 - "startStage"
+Cohesion: 0.16
+Nodes (20): Actor, LINES, Options, pick(), rand(), Spot, startStage(), createActors() (+12 more)
 
 ## Knowledge Gaps
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
@@ -100,15 +100,15 @@ Nodes (7): Node, Options, startParticles(), draw(), loop(), resize(), step()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `gsap` connect `package.json` to `mitglieder.ts`, `store.ts`?**
-  _High betweenness centrality (0.134) - this node is a cross-community bridge._
+  _High betweenness centrality (0.136) - this node is a cross-community bridge._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.08620689655172414 - nodes in this community are weakly interconnected._
-- **Why does `el()` connect `mitglieder.ts` to `admin.ts`, `Webseite Theaterbühne Biberbach`?**
-  _High betweenness centrality (0.074) - this node is a cross-community bridge._
+- **Why does `startStage()` connect `startStage` to `store.ts`?**
+  _High betweenness centrality (0.098) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
-- **Why does `Aufbau` connect `Webseite Theaterbühne Biberbach` to `mitglieder.ts`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `el()` connect `mitglieder.ts` to `admin.ts`, `Webseite Theaterbühne Biberbach`?**
+  _High betweenness centrality (0.069) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
 - **Should `admin.ts` be split into smaller, more focused modules?**

@@ -4,7 +4,7 @@ Vereinswebseite der Theaterbühne Biberbach. Multi-Page-Website (vier echte HTML
 
 | Seite | Inhalt |
 |---|---|
-| `index.html` | Startseite mit animiertem Netzwerk-Hintergrund, Header blendet beim Scrollen ein |
+| `index.html` | Startseite mit animiertem Miniatur-Theater im Hintergrund, Header blendet beim Scrollen ein |
 | `mitglieder.html` | Vorstand (Foto, Name, Funktion, Kontakt) und Mitglieder (Foto, Name) |
 | `archiv.html` | Timeline aller Theaterstücke |
 | `admin.html` | Passwortgeschützte Verwaltung (Link nur im Footer) |
