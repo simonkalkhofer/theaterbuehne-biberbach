@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Archiv – Theaterbühne Biberbach</title>
+    <meta name="description" content="Alle Theaterstücke der Theaterbühne Biberbach der letzten Jahre im Überblick." />
+    <meta name="theme-color" content="#0b0b0b" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="module" src="/src/pages/archiv.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="site-header__logo" href="index.html" aria-label="Theaterbühne Biberbach – Startseite">
+          <img src="/src/assets/logos/logo-light.png" alt="Theaterbühne Biberbach" width="766" height="267" />
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Start</a></li>
+            <li><a href="mitglieder.html">Mitglieder</a></li>
+            <li><a href="archiv.html" aria-current="page">Archiv</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhalt">
+      <section class="page-hero">
+        <div class="container" data-reveal>
+          <span class="eyebrow">Rückblick</span>
+          <h1>Archiv</h1>
+          <p>Unsere Theaterstücke der letzten Jahre – vom ersten Lacher bis zum letzten Applaus.</p>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Theaterstücke nach Jahr">
+        <div class="container">
+          <div class="timeline-wrap">
+            <div class="timeline__progress" aria-hidden="true" data-timeline-progress></div>
+            <ol class="timeline" data-timeline></ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <img src="/src/assets/logos/logo-light.png" alt="Theaterbühne Biberbach" width="766" height="267" loading="lazy" />
+            <p>Amateurtheater mit Herz und Humor.</p>
+          </div>
+          <div>
+            <h2>Seiten</h2>
+            <ul>
+              <li><a href="index.html">Start</a></li>
+              <li><a href="mitglieder.html">Mitglieder</a></li>
+              <li><a href="archiv.html">Archiv</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Kontakt</h2>
+            <ul>
+              <li>Theaterbühne Biberbach</li>
+              <li><a href="mitglieder.html#vorstand">Ansprechpartner im Vorstand</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <span>© <span data-year></span> Theaterbühne Biberbach</span>
+          <a class="admin-link" href="admin.html">Admin</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

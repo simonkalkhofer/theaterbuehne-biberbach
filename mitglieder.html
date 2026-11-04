@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mitglieder – Theaterbühne Biberbach</title>
+    <meta name="description" content="Vorstand und Mitglieder der Theaterbühne Biberbach." />
+    <meta name="theme-color" content="#0b0b0b" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="module" src="/src/pages/mitglieder.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="site-header__logo" href="index.html" aria-label="Theaterbühne Biberbach – Startseite">
+          <img src="/src/assets/logos/logo-light.png" alt="Theaterbühne Biberbach" width="766" height="267" />
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Start</a></li>
+            <li><a href="mitglieder.html" aria-current="page">Mitglieder</a></li>
+            <li><a href="archiv.html">Archiv</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhalt">
+      <section class="page-hero">
+        <div class="container" data-reveal>
+          <span class="eyebrow">Wer wir sind</span>
+          <h1>Mitglieder</h1>
+          <p>Ohne sie geht kein Vorhang auf: unser Vorstand und alle, die auf, vor und hinter der Bühne mitwirken.</p>
+        </div>
+      </section>
+
+      <section class="section" id="vorstand" aria-labelledby="vorstand-titel">
+        <div class="container">
+          <div class="section__head" data-reveal>
+            <span class="eyebrow">Ansprechpartner</span>
+            <h2 id="vorstand-titel">Vorstand</h2>
+            <p>Fragen, Kartenwünsche oder Lust mitzumachen? Melde dich direkt bei uns.</p>
+          </div>
+          <ul class="people" data-board-list></ul>
+        </div>
+      </section>
+
+      <section class="section section--grey" id="mitglieder" aria-labelledby="mitglieder-titel">
+        <div class="container">
+          <div class="section__head" data-reveal>
+            <span class="eyebrow">Ensemble &amp; Team</span>
+            <h2 id="mitglieder-titel">Mitglieder</h2>
+          </div>
+          <ul class="people people--compact" data-member-list></ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <img src="/src/assets/logos/logo-light.png" alt="Theaterbühne Biberbach" width="766" height="267" loading="lazy" />
+            <p>Amateurtheater mit Herz und Humor.</p>
+          </div>
+          <div>
+            <h2>Seiten</h2>
+            <ul>
+              <li><a href="index.html">Start</a></li>
+              <li><a href="mitglieder.html">Mitglieder</a></li>
+              <li><a href="archiv.html">Archiv</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Kontakt</h2>
+            <ul>
+              <li>Theaterbühne Biberbach</li>
+              <li><a href="mitglieder.html#vorstand">Ansprechpartner im Vorstand</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <span>© <span data-year></span> Theaterbühne Biberbach</span>
+          <a class="admin-link" href="admin.html">Admin</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

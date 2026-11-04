@@ -4,9 +4,23 @@ Sprache: Deutsch (Code-Bezeichner englisch, Seiteninhalte deutsch).
 
 ## Stack
 
-- Vite + React 19 + TypeScript (`npm run dev`, `npm run build`, `npm run lint`)
-- Animation: GSAP (`gsap`, `@gsap/react` → `useGSAP`), Smooth Scroll: Lenis (`lenis`)
-- UI-Effekte: React Bits (Komponenten werden per Skill in `src/components/` kopiert)
+- **Multi-Page-Website** (keine SPA, kein React): Vite + Vanilla-TypeScript.
+  `npm run dev` (in PowerShell: `npm.cmd run dev`), `npm run build` → statische Seiten in `dist/`, `npm run lint`
+- Animation: GSAP + ScrollTrigger, Smooth Scroll: Lenis (in `src/common.ts` gekoppelt)
+- Schrift: Montserrat (selbst gehostet über `@fontsource-variable/montserrat`, kein Google-CDN wegen DSGVO)
+- Farben (Tokens in `src/styles/main.css`): Schwarz, 40 %-Grau `#999`, Akzent-Rot `#e62b34`
+
+## Aufbau
+
+- `index.html`, `mitglieder.html`, `archiv.html`, `admin.html` – je eine echte Seite im Projektordner
+  (Kopf- und Fußzeile stehen in jeder HTML-Datei; Änderungen daran in allen vier Dateien machen!)
+- `src/pages/<seite>.ts` – Skript je Seite; `src/common.ts` – gemeinsam (Lenis, Navigation, Reveal)
+- `src/data/store.ts` – Datenmodell + localStorage (Schlüssel `tbb-data-v1`) + Standarddaten
+- `src/lib/particles.ts` – Netzwerk-Hintergrund im Hero; `src/lib/image.ts` – Foto-Verkleinerung
+- Logo-Varianten: `src/assets/logos/logo-light.png` (weiß, transparent), `logo-dark.png`, Original-JPG
+- Admin: Passwortschutz nur clientseitig (SHA-256-Hash in `src/pages/admin.ts`) – **kein echter Schutz**;
+  Daten liegen nur im Browser des Admins. Für echte, für alle sichtbare Pflege wird ein Backend/CMS nötig.
+- Nutzerdaten immer über `textContent`/`el()` ausgeben, nie `innerHTML` (XSS).
 
 ## Code-Navigation: ZUERST den Graphen benutzen
 
@@ -42,7 +56,6 @@ Keine graphify-Hooks installieren und nichts von PyPI nachinstallieren (siehe `G
 | Plugins (SplitText, Flip, ScrollTo …) | `gsap-plugins` |
 | Ruckeln / Performance | `gsap-performance` |
 | Smooth Scrolling, Anker, Modals | `lenis` |
-| Animierte UI-Komponenten, Text-Effekte, Hintergründe | `react-bits` |
 | Seite im Browser prüfen | `run` / eingebauter Browser |
 
 Neue Skills nur nach Prüfung laut `G:\Claude\CLAUDE.md` (SkillSpector) hinzufügen.

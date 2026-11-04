@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin – Theaterbühne Biberbach</title>
+    <meta name="theme-color" content="#0b0b0b" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <script type="module" src="/src/pages/admin.ts"></script>
+  </head>
+  <body class="admin-body">
+    <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="site-header__logo" href="index.html" aria-label="Theaterbühne Biberbach – Startseite">
+          <img src="/src/assets/logos/logo-light.png" alt="Theaterbühne Biberbach" width="766" height="267" />
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menü öffnen">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Hauptnavigation">
+          <ul>
+            <li><a href="index.html">Start</a></li>
+            <li><a href="mitglieder.html">Mitglieder</a></li>
+            <li><a href="archiv.html">Archiv</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="inhalt">
+      <!-- Login -->
+      <section class="admin-login" data-login hidden>
+        <form class="card" data-login-form novalidate>
+          <span class="eyebrow">Interner Bereich</span>
+          <h1 style="font-size: 1.8rem">Admin-Login</h1>
+          <div class="form-row">
+            <label for="password">Passwort</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+          </div>
+          <p class="form-error" role="alert" data-login-error></p>
+          <button class="btn" type="submit">Anmelden</button>
+        </form>
+      </section>
+
+      <!-- Dashboard -->
+      <section class="admin-dash" data-dashboard hidden>
+        <div class="container">
+          <div class="admin-dash__head">
+            <div>
+              <span class="eyebrow">Verwaltung</span>
+              <h1>Dashboard</h1>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn--ghost btn--small" type="button" data-export>Daten exportieren</button>
+              <label class="btn btn--ghost btn--small">
+                Daten importieren
+                <input type="file" accept="application/json,.json" data-import hidden />
+              </label>
+              <button class="btn btn--danger btn--small" type="button" data-reset>Zurücksetzen</button>
+              <button class="btn btn--small" type="button" data-logout>Abmelden</button>
+            </div>
+          </div>
+
+          <div class="notice">
+            <p>
+              <strong>Hinweis:</strong> Änderungen werden nur in <strong>diesem Browser auf diesem Gerät</strong>
+              gespeichert. Andere Besucher sehen sie (noch) nicht. Mit „Daten exportieren“ sicherst du den Stand als Datei.
+            </p>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="Bereiche">
+            <button type="button" role="tab" id="tab-members" aria-controls="panel-members" aria-selected="true" data-tab="members">Mitglieder</button>
+            <button type="button" role="tab" id="tab-plays" aria-controls="panel-plays" aria-selected="false" data-tab="plays" tabindex="-1">Theaterstücke</button>
+          </div>
+
+          <!-- Mitglieder -->
+          <div class="admin-grid" role="tabpanel" id="panel-members" aria-labelledby="tab-members" data-panel="members">
+            <form class="card" data-member-form novalidate>
+              <h2 data-member-form-title>Mitglied hinzufügen</h2>
+              <input type="hidden" name="id" />
+              <div class="form-row">
+                <label for="m-name">Name *</label>
+                <input id="m-name" name="name" required maxlength="80" />
+              </div>
+              <div class="form-row form-row--check">
+                <input id="m-board" name="board" type="checkbox" />
+                <label for="m-board">Gehört zum Vorstand</label>
+              </div>
+              <div data-board-fields hidden>
+                <div class="form-row">
+                  <label for="m-role">Funktion</label>
+                  <input id="m-role" name="role" maxlength="60" placeholder="z. B. 1. Vorstand" />
+                </div>
+                <div class="form-row">
+                  <label for="m-email">Kontaktadresse (E-Mail)</label>
+                  <input id="m-email" name="email" type="email" maxlength="120" />
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="m-photo">Foto</label>
+                <input id="m-photo" name="photo" type="file" accept="image/*" />
+                <span class="form-hint">Wird automatisch verkleinert.</span>
+                <img class="photo-preview" alt="Vorschau" data-member-preview hidden />
+                <button class="btn btn--ghost btn--small" type="button" data-member-photo-remove hidden>Foto entfernen</button>
+              </div>
+              <p class="form-error" role="alert" data-member-error></p>
+              <div class="form-actions">
+                <button class="btn" type="submit" data-member-submit>Hinzufügen</button>
+                <button class="btn btn--ghost" type="button" data-member-cancel hidden>Abbrechen</button>
+              </div>
+            </form>
+            <div class="card">
+              <h2>Alle Mitglieder (<span data-member-count>0</span>)</h2>
+              <ul class="admin-list" data-member-admin-list></ul>
+            </div>
+          </div>
+
+          <!-- Theaterstücke -->
+          <div class="admin-grid" role="tabpanel" id="panel-plays" aria-labelledby="tab-plays" data-panel="plays" hidden>
+            <form class="card" data-play-form novalidate>
+              <h2 data-play-form-title>Theaterstück hinzufügen</h2>
+              <input type="hidden" name="id" />
+              <div class="form-row">
+                <label for="p-year">Jahr *</label>
+                <input id="p-year" name="year" type="number" min="1900" max="2100" required />
+              </div>
+              <div class="form-row">
+                <label for="p-title">Titel *</label>
+                <input id="p-title" name="title" required maxlength="120" />
+              </div>
+              <div class="form-row">
+                <label for="p-desc">Beschreibung</label>
+                <textarea id="p-desc" name="description" maxlength="600"></textarea>
+              </div>
+              <div class="form-row">
+                <label for="p-photo">Bild</label>
+                <input id="p-photo" name="photo" type="file" accept="image/*" />
+                <img class="photo-preview" alt="Vorschau" data-play-preview hidden />
+                <button class="btn btn--ghost btn--small" type="button" data-play-photo-remove hidden>Bild entfernen</button>
+              </div>
+              <p class="form-error" role="alert" data-play-error></p>
+              <div class="form-actions">
+                <button class="btn" type="submit" data-play-submit>Hinzufügen</button>
+                <button class="btn btn--ghost" type="button" data-play-cancel hidden>Abbrechen</button>
+              </div>
+            </form>
+            <div class="card">
+              <h2>Alle Stücke (<span data-play-count>0</span>)</h2>
+              <ul class="admin-list" data-play-admin-list></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__bottom">
+          <span>© <span data-year></span> Theaterbühne Biberbach</span>
+          <a class="admin-link" href="admin.html">Admin</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
