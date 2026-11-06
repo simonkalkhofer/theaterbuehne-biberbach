@@ -1,17 +1,17 @@
-# Graph Report - Theaterbuehne-Biberbach  (2026-11-04)
+# Graph Report - Theaterbuehne-Biberbach  (2026-11-06)
 
 ## Corpus Check
-- 20 files · ~10,179 words
+- 21 files · ~11,234 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
 ## Summary
-- 220 nodes · 430 edges · 11 communities (9 shown, 2 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 12 edges (avg confidence: 0.87)
+- 227 nodes · 449 edges · 12 communities (10 shown, 2 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7c42841e`
+- Built from commit: `a067c738`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,39 +23,40 @@
 - stueck.ts
 - images.ts
 - .oxlintrc.json
-- qs
+- el
 - Theaterbühne Biberbach – Webseite
 - tsconfig.json
 - startStage
+- store.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `qs()` - 22 edges
-2. `el()` - 19 edges
+1. `qs()` - 23 edges
+2. `el()` - 20 edges
 3. `compilerOptions` - 17 edges
 4. `startStage()` - 15 edges
 5. `compilerOptions` - 15 edges
 6. `loadData()` - 14 edges
-7. `renderPlays()` - 13 edges
-8. `renderMembers()` - 12 edges
-9. `prefersReducedMotion()` - 10 edges
-10. `playUrl()` - 9 edges
+7. `prefersReducedMotion()` - 14 edges
+8. `renderPlays()` - 13 edges
+9. `renderMembers()` - 12 edges
+10. `playsByYear()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Regeln` --references--> `el()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Skills für diese Webseite` --references--> `run()`  [INFERRED]
+  CLAUDE.md → src/data/images.ts
 - `Aufbau` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
-- `Skills für dieses Projekt` --references--> `run()`  [INFERRED]
-  CLAUDE.md → src/data/images.ts
-- `renderGalleryEdit()` --indirect_call--> `imageUrl()`  [INFERRED]
-  src/pages/admin.ts → src/data/images.ts
-- `renderGallery()` --indirect_call--> `imageUrl()`  [INFERRED]
-  src/pages/stueck.ts → src/data/images.ts
-- `initSmoothScroll()` --calls--> `prefersReducedMotion()`  [EXTRACTED]
-  src/common.ts → src/lib/dom.ts
+- `Aufbau` --references--> `prefersReducedMotion()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Aufbau` --references--> `qs()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (11 total, 2 thin omitted)
+## Communities (12 total, 2 thin omitted)
 
 ### Community 0 - "package.json"
 Cohesion: 0.09
@@ -70,20 +71,20 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 3 - "admin.ts"
-Cohesion: 0.07
-Nodes (39): CHANGE_EVENT, defaultData(), ExportFile, isSiteData(), Member, member(), normalize(), parseImport() (+31 more)
+Cohesion: 0.08
+Nodes (37): saveData(), drawResized(), fileToResizedBlob(), fileToResizedDataUrl(), dashView, data, editMember(), editPlay() (+29 more)
 
 ### Community 4 - "stueck.ts"
-Cohesion: 0.12
-Nodes (29): gsap@^3.15.1, gsap, getLenis(), initReveal(), initSmoothScroll(), findPlay(), loadData(), onDataChange() (+21 more)
+Cohesion: 0.10
+Nodes (37): Aufbau, gsap@^3.15.1, gsap, getLenis(), initReveal(), initSmoothScroll(), findPlay(), loadData() (+29 more)
 
 ### Community 5 - "images.ts"
 Cohesion: 0.14
-Nodes (18): Aufbau, Code-Navigation: ZUERST den Graphen benutzen, Regeln, Skills für dieses Projekt, Stack, Webseite Theaterbühne Biberbach, allImageIds(), blobToDataUrl() (+10 more)
+Nodes (18): Effekte (Stand), ⚠️ Pflicht zuerst: graphify statt Code durchlesen, Regeln, Skills für diese Webseite, Stack, Webseite Theaterbühne Biberbach, allImageIds(), blobToDataUrl() (+10 more)
 
-### Community 7 - "qs"
-Cohesion: 0.23
-Nodes (21): el(), initials(), isEmail(), isImageDataUrl(), qs(), editMember(), editPlay(), listActions() (+13 more)
+### Community 7 - "el"
+Cohesion: 0.47
+Nodes (9): el(), initials(), isEmail(), isImageDataUrl(), boardCard(), fill(), memberCard(), photo() (+1 more)
 
 ### Community 8 - "Theaterbühne Biberbach – Webseite"
 Cohesion: 0.40
@@ -93,6 +94,10 @@ Nodes (4): Admin-Bereich – wichtig, Entwicklung, Technik, Theaterbühne Biberb
 Cohesion: 0.16
 Nodes (20): Actor, LINES, Options, pick(), rand(), Spot, startStage(), createActors() (+12 more)
 
+### Community 11 - "store.ts"
+Cohesion: 0.23
+Nodes (12): CHANGE_EVENT, defaultData(), ExportFile, isSiteData(), Member, member(), normalize(), parseImport() (+4 more)
+
 ## Knowledge Gaps
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -101,15 +106,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `gsap` connect `stueck.ts` to `package.json`?**
   _High betweenness centrality (0.130) - this node is a cross-community bridge._
+- **Are the 2 inferred relationships involving `el()` (e.g. with `Aufbau` and `Regeln`) actually correct?**
+  _`el()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.09116809116809117 - nodes in this community are weakly interconnected._
 - **Why does `startStage()` connect `startStage` to `stueck.ts`?**
-  _High betweenness centrality (0.088) - this node is a cross-community bridge._
+  _High betweenness centrality (0.086) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
-- **Why does `el()` connect `qs` to `admin.ts`, `stueck.ts`, `images.ts`?**
-  _High betweenness centrality (0.063) - this node is a cross-community bridge._
+- **Why does `qs()` connect `stueck.ts` to `admin.ts`, `el`?**
+  _High betweenness centrality (0.055) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._
-- **Should `admin.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.06765327695560254 - nodes in this community are weakly interconnected._

@@ -2,71 +2,86 @@
 
 Sprache: Deutsch (Code-Bezeichner englisch, Seiteninhalte deutsch).
 
+## ⚠️ Pflicht zuerst: graphify statt Code durchlesen
+
+Dieses Projekt hat einen Code-Wissensgraphen (`graphify-out/`). **Bei jeder Aufgabe zuerst den Graphen
+benutzen, nicht den ganzen Code lesen.** Skill: `graphify`. CLI liegt im geprüften venv (nicht auf PATH):
+
+```powershell
+$g = "G:\Claude\Tools\graphify-venv\Scripts\graphify.exe"
+```
+
+| Schritt | Befehl / Datei |
+|---|---|
+| 1. Graph aktuell? (`Built from commit` mit `git rev-parse HEAD` vergleichen) | `& $g update .` – nur AST, kein LLM, Sekunden |
+| 2. Überblick: Module, zentrale Funktionen („God Nodes“), Communities | `graphify-out/GRAPH_REPORT.md` |
+| 3. „Wo/wie passiert X?“ | `& $g query "<Frage>" --budget 1500` |
+| 4. Was hängt an Funktion/Datei Y? | `& $g explain "<Name>()"` |
+| 5. Wie hängen A und B zusammen? | `& $g path "<A>" "<B>"` |
+| 6. Erst jetzt: **nur** die genannten Dateien/Zeilen öffnen (`Read` mit offset/limit) | – |
+
+- Grep/Glob nur als Rückfall, wenn der Graph nichts liefert.
+- **Vor jedem Commit:** `& $g update .` (nach Löschen/Umbenennen: `update . --force`) und `graphify-out/` mitcommitten.
+- Keine graphify-Hooks, kein `graphify install`, nichts von PyPI (siehe `G:\Claude\CLAUDE.md`).
+
+## Skills für diese Webseite
+
+| Aufgabe | Skill | Hinweis |
+|---|---|---|
+| Code finden, Zusammenhänge, Auswirkungen einer Änderung | **`graphify`** | **immer zuerst** (siehe oben) |
+| Tweens, Easing, Stagger, `gsap.matchMedia()` | `gsap-core` | |
+| Abläufe/Sequenzen (z. B. Hero-Intro) | `gsap-timeline` | |
+| Scroll-Animationen, Parallax, Pinning, `scrub` | `gsap-scrolltrigger` | mit Lenis gekoppelt in `src/common.ts` |
+| SplitText, Flip, ScrollTo, DrawSVG, MorphSVG … | `gsap-plugins` | alle Plugins kostenlos im npm-Paket `gsap` |
+| Helfer (`clamp`, `mapRange`, `toArray`, `snap`) | `gsap-utils` | |
+| Ruckeln, FPS, Akku | `gsap-performance` | nur `transform`/`opacity` animieren |
+| Smooth Scroll, Anker, Scroll stoppen (Modals) | `lenis` | `getLenis()?.stop()/start()` |
+| Seite starten und im Browser prüfen | `run` / eingebauter Browser | Dev-Server: `npm.cmd run dev` |
+| Diagramme/Charts für Doku | `dataviz` | nur bei Bedarf |
+
+**Nicht verwenden:** `react-bits`, `gsap-react`, `gsap-frameworks` – die Seite nutzt kein React/Vue/Svelte.
+Neue Skills nur nach SkillSpector-Prüfung laut `G:\Claude\CLAUDE.md`.
+
 ## Stack
 
-- **Multi-Page-Website** (keine SPA, kein React): Vite + Vanilla-TypeScript.
-  `npm run dev` (in PowerShell: `npm.cmd run dev`), `npm run build` → statische Seiten in `dist/`, `npm run lint`
-- Animation: GSAP + ScrollTrigger, Smooth Scroll: Lenis (in `src/common.ts` gekoppelt)
+- **Multi-Page-Website** (keine SPA, kein Framework): Vite + Vanilla-TypeScript.
+  `npm.cmd run dev` (PowerShell) bzw. `npm run dev`, `npm run build` → statische Seiten in `dist/`, `npm run lint`
+- GSAP 3 (+ ScrollTrigger, SplitText), Lenis
 - Schrift: Montserrat (selbst gehostet über `@fontsource-variable/montserrat`, kein Google-CDN wegen DSGVO)
 - Farben (Tokens in `src/styles/main.css`): Schwarz, 40 %-Grau `#999`, Akzent-Rot `#e62b34`
 
 ## Aufbau
 
-- `index.html`, `mitglieder.html`, `archiv.html`, `stueck.html`, `admin.html` – je eine echte Seite im Projektordner
-  (Kopf- und Fußzeile stehen in jeder HTML-Datei; Änderungen daran in allen fünf Dateien machen!)
+- `index.html`, `mitglieder.html`, `archiv.html`, `stueck.html`, `admin.html` – je eine echte Seite im Projektordner.
+  Kopf-/Fußzeile und das Inline-Skript für den Vorhang stehen in **jeder** HTML-Datei → Änderungen in allen fünf machen!
 - `stueck.html?id=<Stück-ID>` – Detailseite: Text + Bildergalerie + Lightbox (erst hier geladen, nicht in der Übersicht)
-- `src/pages/<seite>.ts` – Skript je Seite; `src/common.ts` – gemeinsam (Lenis, Navigation, Reveal)
-- `src/data/store.ts` – Datenmodell + localStorage (Schlüssel `tbb-data-v1`) + Standarddaten (feste IDs, z. B. `stueck-2025`)
-- `src/data/images.ts` – Galerie-Bilder als Blobs in IndexedDB (`tbb-images`); `Play.photos` enthält nur Bild-IDs.
-  Export/Import packt die Bilder als Data-URLs mit in die JSON-Datei.
-- `src/lib/stage.ts` – Miniatur-Theater (Bühne, Vorhang, laufende Figuren) im Hero; `src/lib/image.ts` – Foto-Verkleinerung
+- `src/pages/<seite>.ts` – Skript je Seite; `src/common.ts` – gemeinsam (Lenis, Navigation, Reveal, Effekte)
+- `src/lib/effects.ts` – Vorhang-Seitenübergang + SplitText-Überschriften (`data-split` am `<h1>/<h2>`)
+- `src/lib/stage.ts` – Miniatur-Theater im Hero (Canvas); Vorhang über `curtain.open` (0–1) per GSAP steuerbar
+- `src/data/store.ts` – Datenmodell + localStorage (`tbb-data-v1`) + Standarddaten (feste IDs, z. B. `stueck-2025`)
+- `src/data/images.ts` – Galerie-Bilder als Blobs in IndexedDB (`tbb-images`); `Play.photos` = Bild-IDs.
+  Export/Import packt die Bilder als Data-URLs in die JSON-Datei.
+- `src/lib/image.ts` – Foto-Verkleinerung; `src/lib/dom.ts` – `el()`, `qs()`, `prefersReducedMotion()`
 - Logo-Varianten: `src/assets/logos/logo-light.png` (weiß, transparent), `logo-dark.png`, Original-JPG
 - Admin: Passwortschutz nur clientseitig (SHA-256-Hash in `src/pages/admin.ts`) – **kein echter Schutz**;
   Daten liegen nur im Browser des Admins. Für echte, für alle sichtbare Pflege wird ein Backend/CMS nötig.
-- Nutzerdaten immer über `textContent`/`el()` ausgeben, nie `innerHTML` (XSS).
 
-## Code-Navigation: ZUERST den Graphen benutzen
+## Effekte (Stand)
 
-Für dieses Projekt gibt es einen graphify-Wissensgraphen in `graphify-out/`.
-Nicht den ganzen Code durchsuchen, sondern so vorgehen:
-
-1. Überblick: `graphify-out/GRAPH_REPORT.md` lesen (Module, Communities, zentrale Knoten).
-2. Gezielte Fragen über den Graphen beantworten (Skill `graphify`):
-   ```powershell
-   & "G:\Claude\Tools\graphify-venv\Scripts\graphify.exe" query "<Frage>"
-   & "G:\Claude\Tools\graphify-venv\Scripts\graphify.exe" explain "<Komponente>"
-   & "G:\Claude\Tools\graphify-venv\Scripts\graphify.exe" path "<A>" "<B>"
-   ```
-3. Erst danach gezielt nur die Dateien öffnen, die der Graph nennt. Grep/Glob nur als Rückfall,
-   wenn der Graph keine Antwort liefert.
-
-**Graph aktuell halten:** Nach jeder Code-Änderung (spätestens vor jedem Commit) aktualisieren –
-reine AST-Analyse, kein LLM, dauert Sekunden:
-```powershell
-& "G:\Claude\Tools\graphify-venv\Scripts\graphify.exe" update .
-```
-Nach dem Löschen/Umbenennen vieler Dateien: `update . --force`.
-Keine graphify-Hooks installieren und nichts von PyPI nachinstallieren (siehe `G:\Claude\CLAUDE.md`).
-
-## Skills für dieses Projekt
-
-| Aufgabe | Skill |
-|---|---|
-| Code-Struktur, Abhängigkeiten, „wo ist X?“ | `graphify` |
-| Animationen allgemein | `gsap-core`, `gsap-timeline`, `gsap-utils` |
-| Animationen in React-Komponenten | `gsap-react` (immer `useGSAP` + Scope/Cleanup) |
-| Scroll-Animationen, Pinning, Parallax | `gsap-scrolltrigger` (+ `lenis` für Smooth Scroll) |
-| Plugins (SplitText, Flip, ScrollTo …) | `gsap-plugins` |
-| Ruckeln / Performance | `gsap-performance` |
-| Smooth Scrolling, Anker, Modals | `lenis` |
-| Seite im Browser prüfen | `run` / eingebauter Browser |
-
-Neue Skills nur nach Prüfung laut `G:\Claude\CLAUDE.md` (SkillSpector) hinzufügen.
+| Wo | Effekt | Code |
+|---|---|---|
+| Startseite | Bühnenvorhang öffnet sich, Logo/Slogan (SplitText-Wörter) erscheinen | `home.ts` Timeline |
+| Startseite | Hero-Text schwebt beim Scrollen weg; Jahreszahl-Parallax; Zahlen zählen hoch | `home.ts` |
+| Alle Seiten | Theatervorhang schließt/öffnet beim Seitenwechsel (Sicherheits-Timeouts!) | `effects.ts` |
+| Alle Seiten | `[data-reveal]` blendet ein, `[data-split]`-Überschriften gleiten zeilenweise herein | `common.ts`, `effects.ts` |
+| Archiv | rote Fortschrittslinie der Timeline (scrub) | `archiv.ts` |
 
 ## Regeln
 
-- `prefers-reduced-motion` respektieren (`gsap.matchMedia()`).
+- `prefers-reduced-motion` respektieren: jeder neue Effekt braucht eine ruhige Variante.
+- Effekte dürfen Inhalte nie dauerhaft verdecken (Fallback-Timeout wie in `effects.ts`).
+- Nutzerdaten immer über `textContent`/`el()` ausgeben, nie `innerHTML` (XSS).
 - Mobile first, barrierearm (Alt-Texte, Kontraste, semantisches HTML).
 - GitHub: https://github.com/simonkalkhofer/theaterbuehne-biberbach (privat, Branch `main`).
   Push über Git Credential Manager (`git push`); die gh CLI ist installiert, aber nicht angemeldet.
-- Git: kleine Commits auf Deutsch, `graphify-out/` vor dem Commit aktualisieren und mitcommitten.
+- Git: kleine Commits auf Deutsch, vorher Graph aktualisieren (siehe oben).

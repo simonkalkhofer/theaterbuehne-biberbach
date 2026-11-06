@@ -7,6 +7,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { prefersReducedMotion } from './lib/dom'
+import { initPageCurtain, initSplitHeadings } from './lib/effects'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -70,5 +71,7 @@ function initFooterYear(): void {
 
 initSmoothScroll()
 initNav()
+initPageCurtain()
+initSplitHeadings()
 initFooterYear()
 initReveal()

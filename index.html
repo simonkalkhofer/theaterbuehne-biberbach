@@ -2,6 +2,7 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <script>try{if(sessionStorage.getItem('tbb-curtain')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('curtain-in')}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Theaterbühne Biberbach</title>
     <meta name="description" content="Theaterbühne Biberbach – Amateurtheater mit Herz und Humor. Mitglieder, Vorstand und alle Stücke im Archiv." />
@@ -11,7 +12,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script type="module" src="/src/pages/home.ts"></script>
   </head>
-  <body>
+  <body data-own-curtain>
     <a class="skip-link" href="#inhalt">Zum Inhalt springen</a>
 
     <header class="site-header site-header--hidden" data-header inert>
@@ -47,7 +48,7 @@
         <div class="container intro">
           <div class="intro__text" data-reveal>
             <span class="eyebrow">Über uns</span>
-            <h2>Theater von hier – für alle</h2>
+            <h2 data-split>Theater von hier – für alle</h2>
             <p>
               Bei der Theaterbühne Biberbach stehen Nachbarn, Freunde und Familien gemeinsam auf der Bühne.
               Jedes Jahr bringen wir ein neues Stück auf die Bretter – mit viel Probenfleiß, selbstgebauten
@@ -80,7 +81,7 @@
         <div class="container">
           <div class="section__head" data-reveal>
             <span class="eyebrow">Entdecken</span>
-            <h2>Hinter den Kulissen</h2>
+            <h2 data-split>Hinter den Kulissen</h2>
           </div>
           <div class="teasers">
             <a class="teaser" href="mitglieder.html" data-reveal>

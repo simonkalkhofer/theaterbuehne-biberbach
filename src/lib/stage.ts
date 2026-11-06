@@ -34,6 +34,8 @@ interface Spot {
 
 interface Options {
   reducedMotion?: boolean
+  /** Vorhang-Zustand (0 = geschlossen, 1 = offen) – kann von außen per GSAP animiert werden */
+  curtain?: { open: number }
 }
 
 const RED = '#e62b34'
@@ -47,6 +49,7 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
   if (!ctx) return () => {}
   const c = ctx
   const reduced = opts.reducedMotion ?? false
+  const curtain = opts.curtain ?? { open: 1 }
 
   let W = 0
   let H = 0
@@ -370,7 +373,9 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
 
   function drawCurtains() {
     const sway = reduced ? 0 : Math.sin(time * 0.6) * 4
-    const cw = g.curtainW
+    // offen: schmale Seitenvorhänge; geschlossen: beide Hälften treffen sich in der Mitte
+    const closed = 1 - Math.min(1, Math.max(0, curtain.open))
+    const cw = g.curtainW + (W / 2 + 4 - g.curtainW) * closed
     for (const side of [-1, 1]) {
       c.save()
       if (side === 1) {
@@ -388,14 +393,9 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
       c.moveTo(0, 0)
       c.lineTo(cw, 0)
       // gerafft: oben schmal, unten zur Seite ausgestellt
-      c.bezierCurveTo(
-        cw * 0.8 + sway,
-        H * 0.35,
-        cw * 1.25 + sway,
-        H * 0.6,
-        cw * 1.05 + sway * 0.5,
-        g.floorFront,
-      )
+      // geschlossen: gerade Kante (keine Lücke in der Mitte); offen: geraffte Form
+      const k = (f: number) => cw * (f + (1 - f) * closed)
+      c.bezierCurveTo(k(0.8) + sway, H * 0.35, k(1.25) + sway, H * 0.6, k(1.05) + sway * 0.5, g.floorFront)
       c.lineTo(0, g.floorFront)
       c.closePath()
       c.fill()

@@ -2,6 +2,7 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <script>try{if(sessionStorage.getItem('tbb-curtain')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('curtain-in')}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Theaterstück – Theaterbühne Biberbach</title>
     <meta name="description" content="Bilder und Infos zu einem Theaterstück der Theaterbühne Biberbach." />
@@ -49,7 +50,7 @@
         <div class="container">
           <div class="section__head" data-reveal>
             <span class="eyebrow">Galerie</span>
-            <h2 id="galerie-titel">Bilder</h2>
+            <h2 id="galerie-titel" data-split>Bilder</h2>
           </div>
           <ul class="gallery" data-play-gallery></ul>
         </div>

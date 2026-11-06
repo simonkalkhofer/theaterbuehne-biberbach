@@ -2,6 +2,7 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+    <script>try{if(sessionStorage.getItem('tbb-curtain')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('curtain-in')}catch(e){}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mitglieder – Theaterbühne Biberbach</title>
     <meta name="description" content="Vorstand und Mitglieder der Theaterbühne Biberbach." />
@@ -36,7 +37,7 @@
       <section class="page-hero">
         <div class="container" data-reveal>
           <span class="eyebrow">Wer wir sind</span>
-          <h1>Mitglieder</h1>
+          <h1 data-split>Mitglieder</h1>
           <p>Ohne sie geht kein Vorhang auf: unser Vorstand und alle, die auf, vor und hinter der Bühne mitwirken.</p>
         </div>
       </section>
@@ -45,7 +46,7 @@
         <div class="container">
           <div class="section__head" data-reveal>
             <span class="eyebrow">Ansprechpartner</span>
-            <h2 id="vorstand-titel">Vorstand</h2>
+            <h2 id="vorstand-titel" data-split>Vorstand</h2>
             <p>Fragen, Kartenwünsche oder Lust mitzumachen? Melde dich direkt bei uns.</p>
           </div>
           <ul class="people" data-board-list></ul>
@@ -56,7 +57,7 @@
         <div class="container">
           <div class="section__head" data-reveal>
             <span class="eyebrow">Ensemble &amp; Team</span>
-            <h2 id="mitglieder-titel">Mitglieder</h2>
+            <h2 id="mitglieder-titel" data-split>Mitglieder</h2>
           </div>
           <ul class="people people--compact" data-member-list></ul>
         </div>

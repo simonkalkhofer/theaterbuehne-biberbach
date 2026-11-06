@@ -1,5 +1,6 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { SplitText } from 'gsap/SplitText'
 import '../common'
 import { loadData, onDataChange, playsByYear, playUrl } from '../data/store'
 import { prefersReducedMotion, qs } from '../lib/dom'
@@ -7,18 +8,27 @@ import { startStage } from '../lib/stage'
 
 const reduced = prefersReducedMotion()
 
-// --- Miniatur-Theater im Hero ------------------------------------------------
-startStage(qs<HTMLCanvasElement>('.hero__canvas'), { reducedMotion: reduced })
+// --- Miniatur-Theater im Hero: Vorhang öffnet sich beim Laden ---------------
+const curtain = { open: reduced ? 1 : 0 }
+startStage(qs<HTMLCanvasElement>('.hero__canvas'), { reducedMotion: reduced, curtain })
 
-// --- Intro-Animation ---------------------------------------------------------
 if (!reduced) {
-  gsap.from('[data-hero-anim]', {
+  const slogan = SplitText.create('.hero__slogan', { type: 'words', mask: 'words' })
+  gsap
+    .timeline({ delay: 0.3 })
+    .to(curtain, { open: 1, duration: 2, ease: 'power3.inOut' })
+    .from('.hero__logo', { opacity: 0, scale: 0.92, duration: 1, ease: 'power3.out' }, '-=1.1')
+    .from(slogan.words, { yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.08 }, '-=0.6')
+    .from('.hero__sub', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.5')
+    // .hero__scroll ist per CSS zentriert (translateX) → nur einblenden
+    .from('.hero__scroll', { opacity: 0, duration: 0.8 }, '-=0.4')
+
+  // Beim Herausscrollen: Text schwebt nach oben und blendet aus (Parallax)
+  gsap.to('.hero__content', {
+    yPercent: -25,
     opacity: 0,
-    y: 40,
-    duration: 1.2,
-    ease: 'power3.out',
-    stagger: 0.18,
-    delay: 0.15,
+    ease: 'none',
+    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 30%', scrub: true },
   })
 }
 
@@ -63,3 +73,35 @@ function render(): void {
 
 render()
 onDataChange(render)
+
+// --- Zahlen zählen hoch, große Jahreszahl gleitet beim Scrollen ----------------
+if (!reduced) {
+  document.querySelectorAll<HTMLElement>('[data-stat]').forEach((node) => {
+    const target = Number(node.textContent)
+    if (!Number.isFinite(target) || target === 0) return
+    // Jahreszahlen ab 1900 zählen nur die letzten Schritte hoch
+    const from = target > 1900 ? target - 25 : 0
+    const counter = { value: from }
+    node.textContent = String(from)
+    gsap.to(counter, {
+      value: target,
+      duration: 1.6,
+      ease: 'power2.out',
+      snap: { value: 1 },
+      onUpdate: () => {
+        node.textContent = String(counter.value)
+      },
+      scrollTrigger: { trigger: node, start: 'top 90%', once: true },
+    })
+  })
+
+  gsap.fromTo(
+    '.latest__year',
+    { yPercent: 25 },
+    {
+      yPercent: -25,
+      ease: 'none',
+      scrollTrigger: { trigger: '.latest', start: 'top bottom', end: 'bottom top', scrub: true },
+    },
+  )
+}
