@@ -1510,13 +1510,14 @@ html.curtain-in::after {
 
 .admin-grid {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
   align-items: start;
 }
 
 @media (min-width: 960px) {
   .admin-grid {
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 380px minmax(0, 1fr);
   }
 }
 
@@ -1649,6 +1650,170 @@ html.curtain-in::after {
 
 .toast.is-visible {
   transform: none;
+}
+
+/* --- Admin am Handy --------------------------------------------------------- */
+/* Grid-Spalten dürfen schmaler als ihr Inhalt werden (sonst schieben Dateifeld
+   und Buttons die Seite breiter als den Bildschirm). */
+.admin-grid > *,
+.admin-list__meta {
+  min-width: 0;
+}
+
+.admin-list__meta strong {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .admin-dash {
+    padding: calc(var(--header-h) + 1.25rem) 0 3rem;
+  }
+
+  .admin-dash__head {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Export / Import / Zurücksetzen / Abmelden als gleich breites 2×2-Raster */
+  .admin-dash__head .form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .admin-dash__head .btn {
+    width: 100%;
+    padding-inline: 0.5rem;
+    letter-spacing: 0.06em;
+  }
+
+  .notice {
+    margin-bottom: 1.25rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Tabs füllen die Breite und bleiben beim Scrollen unter dem Header sichtbar */
+  .tabs {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 5;
+    margin-inline: calc(-1 * var(--gutter));
+    margin-bottom: 1rem;
+    padding-inline: var(--gutter);
+    background: var(--grey-soft);
+  }
+
+  .tabs button {
+    flex: 1;
+    padding-inline: 0.5rem;
+  }
+
+  .card {
+    padding: 1.25rem 1rem;
+  }
+
+  .admin-grid {
+    gap: 1rem;
+  }
+
+  /* 16px verhindert das automatische Hineinzoomen von iOS beim Tippen */
+  .form-row input,
+  .form-row select,
+  .form-row textarea,
+  .credit-row select,
+  .credit-row input {
+    font-size: 16px;
+  }
+
+  .form-row input[type='file'] {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* Haupt-Buttons (Speichern / Abbrechen) über die volle Breite */
+  .card > .form-actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .credit-edit .form-actions .btn {
+    flex: 1 1 0;
+    padding-inline: 0.5rem;
+  }
+
+  /* Rollen: oben Art + Entfernen, darunter Rolle/Aufgabe und Name in voller Breite */
+  .credit-row {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 0.4rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .credit-row select,
+  .credit-row .btn {
+    grid-row: 1;
+  }
+
+  .credit-row .btn {
+    grid-column: 2;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .credit-row input,
+  .credit-row [data-credit-name] {
+    grid-column: 1 / -1;
+  }
+
+  .credit-row select,
+  .credit-row input {
+    min-height: 44px;
+  }
+
+  .credit-edit .form-actions .btn {
+    letter-spacing: 0.05em;
+  }
+
+  /* Listen: Bild + Name oben, Bearbeiten/Löschen darunter in voller Breite */
+  .admin-list li {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 0.6rem 0.8rem;
+  }
+
+  .admin-list__thumb {
+    width: 48px;
+    height: 48px;
+  }
+
+  .admin-list__actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .admin-list__actions .btn {
+    padding-inline: 0.4rem;
+  }
+
+  .admin-list__actions .btn {
+    min-height: 40px;
+  }
+
+  .gallery-edit {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .gallery-edit__tools button {
+    min-height: 36px;
+    font-size: 1.05rem;
+  }
+
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
 }
 
 [hidden] {
