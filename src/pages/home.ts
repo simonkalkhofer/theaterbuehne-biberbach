@@ -2,7 +2,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import '../common'
-import { loadData, onDataChange, playsByYear, playUrl } from '../data/store'
+import { initData, loadData, onDataChange, playsByYear, playUrl } from '../data/store'
 import { prefersReducedMotion, qs } from '../lib/dom'
 import { startStage } from '../lib/stage'
 
@@ -78,6 +78,7 @@ function render(): void {
   link.href = latest ? playUrl(latest) : 'archiv.html'
 }
 
+await initData()
 render()
 onDataChange(render)
 

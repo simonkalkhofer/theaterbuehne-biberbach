@@ -1,15 +1,17 @@
 /**
  * Datenspeicher der Webseite.
  *
- * Mitglieder und Theaterstücke werden im localStorage des Browsers gespeichert.
- * Ist dort (noch) nichts gespeichert, werden die Standarddaten unten verwendet.
- * Wichtig: localStorage gilt nur für DIESEN Browser auf DIESEM Gerät.
+ * Inhalte liegen auf dem Server (server/, auf Railway im Volume) und sind für alle
+ * Besucher gleich. Jede Seite ruft beim Laden `await initData()` auf; danach liefert
+ * `loadData()` die Inhalte. Hat der Admin noch nie gespeichert oder ist der Server
+ * nicht erreichbar, werden die Standarddaten unten verwendet.
  */
+import { isImageName, saveSite, fetchSite } from './api'
 
 export interface Member {
   id: string
   name: string
-  /** Foto als Data-URL (verkleinertes JPEG) oder leer */
+  /** Dateiname des Fotos auf dem Server (siehe imageSrc) oder leer */
   photo: string
   /** gehört zum Vorstand */
   board: boolean
@@ -25,7 +27,7 @@ export interface Play {
   title: string
   /** Text zum Stück – wird erst auf der Detailseite angezeigt */
   description: string
-  /** IDs der Galerie-Bilder im Bild-Speicher (IndexedDB), in Anzeigereihenfolge */
+  /** Dateinamen der Galerie-Bilder auf dem Server, in Anzeigereihenfolge */
   photos: string[]
   /** Rollen im Stück (cast) und Team hinter der Bühne (crew), z. B. Regie */
   credits: Credit[]
@@ -38,18 +40,12 @@ export interface Credit {
   group: 'cast' | 'crew'
 }
 
-/** Datei-Format für Export/Import: Daten + Galerie-Bilder als Data-URLs */
-export interface ExportFile extends SiteData {
-  images?: Record<string, string>
-}
-
 export interface SiteData {
   version: 1
   members: Member[]
   plays: Play[]
 }
 
-const STORAGE_KEY = 'tbb-data-v1'
 export const CHANGE_EVENT = 'tbb:data-changed'
 
 export const uid = (): string =>
@@ -150,7 +146,7 @@ export function normalize(value: SiteData): SiteData {
     members: value.members.map((m) => ({
       id: String(m.id || uid()),
       name: String(m.name ?? '').trim(),
-      photo: typeof m.photo === 'string' ? m.photo : '',
+      photo: typeof m.photo === 'string' && isImageName(m.photo) ? m.photo : '',
       board: Boolean(m.board),
       role: String(m.role ?? '').trim(),
       email: String(m.email ?? '').trim(),
@@ -160,9 +156,8 @@ export function normalize(value: SiteData): SiteData {
       year: Number(p.year) || new Date().getFullYear(),
       title: String(p.title ?? '').trim(),
       description: String(p.description ?? '').trim(),
-      // (Pfade wie „demo/…jpg“ stammen von entfernten Demo-Bildern und werden verworfen)
       photos: Array.isArray(p.photos)
-        ? p.photos.filter((x): x is string => typeof x === 'string' && !x.includes('/'))
+        ? p.photos.filter((x): x is string => typeof x === 'string' && isImageName(x))
         : [],
       credits: Array.isArray(p.credits)
         ? p.credits
@@ -177,17 +172,23 @@ export function normalize(value: SiteData): SiteData {
   }
 }
 
-export function loadData(): SiteData {
+let current: SiteData | null = null
+
+/** Inhalte vom Server laden (einmal pro Seitenaufruf). */
+export async function initData(): Promise<SiteData> {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed: unknown = JSON.parse(raw)
-      if (isSiteData(parsed)) return upgradePlaceholderMembers(normalize(parsed))
-    }
+    const remote = await fetchSite()
+    current = isSiteData(remote) ? upgradePlaceholderMembers(normalize(remote)) : defaultData()
   } catch {
-    // localStorage nicht verfügbar oder Daten beschädigt → Standarddaten
+    // Server nicht erreichbar (z. B. lokal nur „npm run dev“ ohne Server) → Standarddaten
+    current = defaultData()
   }
-  return defaultData()
+  return current
+}
+
+/** Aktuelle Inhalte (nach initData). */
+export function loadData(): SiteData {
+  return current ?? defaultData()
 }
 
 /**
@@ -208,42 +209,21 @@ export const lastName = (name: string): string => name.trim().split(/\s+/).pop()
 export const byLastName = (a: { name: string }, b: { name: string }): number =>
   lastName(a.name).localeCompare(lastName(b.name), 'de') || a.name.localeCompare(b.name, 'de')
 
-/** Speichert die Daten. Wirft einen Fehler, wenn der Speicher voll/nicht verfügbar ist. */
-export function saveData(data: SiteData): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-  } catch (err) {
-    const full = err instanceof DOMException && err.name === 'QuotaExceededError'
-    throw new Error(
-      full
-        ? 'Der Browser-Speicher ist voll. Bitte kleinere oder weniger Fotos verwenden.'
-        : 'Speichern ist in diesem Browser nicht möglich (z. B. privates Fenster).',
-      { cause: err },
-    )
-  }
+/**
+ * Speichert die Inhalte auf dem Server (nur angemeldet möglich).
+ * Danach sehen alle Besucher die neuen Inhalte. Wirft bei Fehlern.
+ */
+export async function saveData(data: SiteData): Promise<SiteData> {
+  const saved = await saveSite(data)
+  current = isSiteData(saved) ? normalize(saved) : data
   window.dispatchEvent(new CustomEvent(CHANGE_EVENT))
+  return current
 }
 
-export function resetData(): void {
-  try {
-    localStorage.removeItem(STORAGE_KEY)
-  } catch {
-    // ignorieren
-  }
-  window.dispatchEvent(new CustomEvent(CHANGE_EVENT))
-}
-
-export function parseImport(text: string): { data: SiteData; images: Record<string, string> } {
+export function parseImport(text: string): SiteData {
   const parsed: unknown = JSON.parse(text)
   if (!isSiteData(parsed)) throw new Error('Die Datei enthält keine gültigen Webseiten-Daten.')
-  const raw = (parsed as ExportFile).images
-  const images: Record<string, string> = {}
-  if (raw && typeof raw === 'object') {
-    for (const [id, url] of Object.entries(raw)) {
-      if (typeof url === 'string' && /^data:image\/(jpeg|png|webp);base64,/i.test(url)) images[id] = url
-    }
-  }
-  return { data: normalize(parsed), images }
+  return normalize(parsed)
 }
 
 export const findPlay = (data: SiteData, id: string | null): Play | undefined =>
@@ -251,12 +231,9 @@ export const findPlay = (data: SiteData, id: string | null): Play | undefined =>
 
 export const playUrl = (p: Play): string => `stueck.html?id=${encodeURIComponent(p.id)}`
 
-/** Ruft `render` auf, wenn sich die Daten ändern – auch in anderen Tabs. */
+/** Ruft `render` auf, wenn sich die Daten auf dieser Seite ändern. */
 export function onDataChange(render: () => void): void {
   window.addEventListener(CHANGE_EVENT, render)
-  window.addEventListener('storage', (e) => {
-    if (e.key === null || e.key === STORAGE_KEY) render()
-  })
 }
 
 /** Stücke absteigend nach Jahr (neuestes zuerst). */

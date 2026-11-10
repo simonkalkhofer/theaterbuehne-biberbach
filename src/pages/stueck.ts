@@ -6,12 +6,11 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import '../common'
 import { getLenis, initReveal } from '../common'
-import { imageUrl } from '../data/images'
-import { findPlay, loadData, playsByYear, playUrl, type Play } from '../data/store'
+import { imageSrc } from '../data/api'
+import { findPlay, initData, playsByYear, playUrl, type Play } from '../data/store'
 import { el, prefersReducedMotion, qs } from '../lib/dom'
 
 const id = new URLSearchParams(location.search).get('id')
-let objectUrls: string[] = []
 
 let refreshTimer = 0
 function refreshSoon(): void {
@@ -95,13 +94,9 @@ function renderCredits(play: Play): boolean {
   return total > 0
 }
 
-async function renderGallery(play: Play): Promise<boolean> {
+function renderGallery(play: Play): boolean {
   const list = qs('[data-play-gallery]')
-  objectUrls.forEach((u) => URL.revokeObjectURL(u))
-  objectUrls = []
-
-  const urls = (await Promise.all(play.photos.map(imageUrl))).filter((u): u is string => Boolean(u))
-  objectUrls = urls
+  const urls = play.photos.map(imageSrc)
   lbItems = urls.map((src, i) => ({ src, alt: `„${play.title}“ – Bild ${i + 1} von ${urls.length}` }))
 
   list.replaceChildren(
@@ -136,7 +131,7 @@ function renderNav(play: Play, all: Play[]): void {
 }
 
 async function render(): Promise<void> {
-  const data = loadData()
+  const data = await initData()
   const play = findPlay(data, id)
 
   if (!play) {
@@ -153,7 +148,7 @@ async function render(): Promise<void> {
 
   const hasText = renderText(play)
   const hasCredits = renderCredits(play)
-  const hasImages = await renderGallery(play)
+  const hasImages = renderGallery(play)
   qs('[data-play-empty]').hidden = hasText || hasCredits || hasImages
   renderNav(play, data.plays)
   initReveal(qs('#inhalt'))

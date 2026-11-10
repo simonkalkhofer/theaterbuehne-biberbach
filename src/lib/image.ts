@@ -32,12 +32,7 @@ async function drawResized(file: File, maxSize: number): Promise<HTMLCanvasEleme
   }
 }
 
-/** Kleines Bild als JPEG-Data-URL (für Mitgliederfotos im localStorage). */
-export async function fileToResizedDataUrl(file: File, maxSize = 600, quality = 0.8): Promise<string> {
-  return (await drawResized(file, maxSize)).toDataURL('image/jpeg', quality)
-}
-
-/** Größeres Bild als JPEG-Blob (für Galerien in IndexedDB). */
+/** Bild als JPEG-Blob für den Upload auf den Server. */
 export async function fileToResizedBlob(file: File, maxSize = 1600, quality = 0.82): Promise<Blob> {
   const canvas = await drawResized(file, maxSize)
   return new Promise((resolve, reject) =>

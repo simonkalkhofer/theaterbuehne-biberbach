@@ -7,6 +7,10 @@ const page = (name: string) => resolve(import.meta.dirname, name)
 export default defineConfig({
   // relative Pfade: die fertige Seite funktioniert in jedem (Unter-)Ordner eines Webservers
   base: './',
+  // lokal: API-Aufrufe an den Node-Server weiterleiten (npm run dev:server)
+  server: {
+    proxy: { '/api': { target: 'http://localhost:3000', changeOrigin: false, xfwd: true } },
+  },
   build: {
     rollupOptions: {
       input: {

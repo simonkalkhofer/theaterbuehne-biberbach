@@ -14,17 +14,18 @@ Vereinswebseite der Theaterbühne Biberbach. Multi-Page-Website (fünf echte HTM
 
 ```bash
 npm install
-npm run dev      # Entwicklungsserver (PowerShell: npm.cmd run dev)
+npm run dev:server   # API-Server (Daten in .devdata/, Passwort theater123)
+npm run dev          # Entwicklungsserver (PowerShell: npm.cmd run dev)
 npm run build    # fertige Webseite nach dist/ – diesen Ordner auf den Webserver laden
 npm run lint
 ```
 
-## Admin-Bereich – wichtig
+## Admin-Bereich
 
-- Daten (Mitglieder, Stücke) liegen im **localStorage**, Galerie-Bilder in **IndexedDB** des Browsers.
-  Änderungen sieht nur, wer denselben Browser auf demselben Gerät benutzt – **nicht** die Besucher.
-- Der Passwortschutz läuft im Browser und ist **kein echter Zugriffsschutz**.
-- „Daten exportieren/importieren“ sichert bzw. überträgt den Stand als JSON-Datei.
+- Link „Admin“ unten in der Fußzeile. Passwort wird auf dem Server geprüft (`ADMIN_PASSWORD`).
+- „Speichern“ überträgt Änderungen auf den Server – sofort für alle Besucher sichtbar.
+- Bei jedem Speichern entsteht automatisch eine Sicherungskopie auf dem Server.
+- Veröffentlichen auf Railway: siehe [DEPLOY.md](DEPLOY.md).
 
 ## Technik
 

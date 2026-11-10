@@ -1,7 +1,8 @@
 import '../common'
 import { initReveal } from '../common'
-import { byLastName, loadData, onDataChange, type Member } from '../data/store'
-import { el, initials, isEmail, isImageDataUrl, qs } from '../lib/dom'
+import { imageSrc } from '../data/api'
+import { byLastName, initData, loadData, onDataChange, type Member } from '../data/store'
+import { el, initials, isEmail, qs } from '../lib/dom'
 
 /** Platzhalter-Namen aus den Standarddaten bekommen eine Silhouette statt Initialen. */
 const PLACEHOLDER_NAME = /^(name folgt|mitglied \d+)$/i
@@ -10,8 +11,8 @@ function photo(m: Member): HTMLElement {
   return el(
     'div',
     { class: 'person__photo' },
-    isImageDataUrl(m.photo)
-      ? el('img', { src: m.photo, alt: `Foto von ${m.name}`, loading: 'lazy' })
+    m.photo
+      ? el('img', { src: imageSrc(m.photo), alt: `Foto von ${m.name}`, loading: 'lazy' })
       : PLACEHOLDER_NAME.test(m.name)
         ? el('div', { class: 'person__placeholder person__placeholder--anon', 'aria-hidden': 'true' })
         : el('div', { class: 'person__placeholder', 'aria-hidden': 'true', text: initials(m.name) }),
@@ -55,5 +56,6 @@ function render(): void {
   initReveal(qs('#inhalt'))
 }
 
+await initData()
 render()
 onDataChange(render)

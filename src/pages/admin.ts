@@ -1,65 +1,27 @@
 /**
- * Admin-Bereich: einfacher Passwortschutz + Verwaltung von Mitgliedern und Stücken.
- *
- * ACHTUNG: Das ist KEIN echter Zugriffsschutz. Der Code läuft komplett im Browser;
- * wer sich auskennt, kann die Prüfung umgehen. Er verhindert nur versehentliche
- * Änderungen. Die Daten liegen ohnehin nur im eigenen Browser (localStorage).
+ * Admin-Bereich: Login über den Server, Verwaltung von Mitgliedern und Stücken.
+ * „Speichern“ schreibt direkt auf den Server – alle Besucher sehen die Änderung sofort.
+ * Passwort, Sitzung und Rechte prüft ausschließlich der Server (server/auth.ts).
  */
 import '../common'
-import {
-  blobToDataUrl,
-  clearImages,
-  dataUrlToBlob,
-  getImage,
-  imageUrl,
-  putImage,
-  removeUnusedImages,
-} from '../data/images'
+import { ApiError, getSession, imageSrc, login, logout, uploadImage } from '../data/api'
 import {
   byLastName,
   defaultData,
+  initData,
   loadData,
   parseImport,
   playsByYear,
   playUrl,
-  resetData,
   saveData,
   uid,
   type Credit,
-  type ExportFile,
   type Member,
   type Play,
   type SiteData,
 } from '../data/store'
-import { el, initials, isImageDataUrl, qs } from '../lib/dom'
-import { fileToResizedBlob, fileToResizedDataUrl } from '../lib/image'
-
-/** SHA-256 des Admin-Passworts (Klartext steht bewusst nicht im Code). */
-const PASSWORD_HASH = 'd74d19c2635b79ff2c6159f231a9842e57e4d437f0a8f0df765004690883ea6a'
-const SESSION_KEY = 'tbb-admin-session'
-
-async function sha256(text: string): Promise<string> {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
-}
-
-const session = {
-  get: () => {
-    try {
-      return sessionStorage.getItem(SESSION_KEY) === '1'
-    } catch {
-      return false
-    }
-  },
-  set: (on: boolean) => {
-    try {
-      if (on) sessionStorage.setItem(SESSION_KEY, '1')
-      else sessionStorage.removeItem(SESSION_KEY)
-    } catch {
-      // ohne sessionStorage bleibt man nur bis zum Neuladen angemeldet
-    }
-  },
-}
+import { el, initials, qs } from '../lib/dom'
+import { fileToResizedBlob } from '../lib/image'
 
 // --- UI-Helfer ----------------------------------------------------------------
 const toastEl = qs('[data-toast]')
@@ -72,16 +34,28 @@ function toast(message: string): void {
 }
 
 let data: SiteData = loadData()
+let saving = false
 
-function persist(next: SiteData, message: string): boolean {
+/** Speichert auf dem Server. Bei abgelaufener Sitzung zurück zum Login. */
+async function persist(next: SiteData, message: string): Promise<boolean> {
+  if (saving) return false
+  saving = true
+  document.body.classList.add('is-saving')
   try {
-    saveData(next)
-    data = next
-    toast(message)
+    data = await saveData(next)
+    toast(`${message} Für alle Besucher sichtbar.`)
     return true
   } catch (err) {
-    alert(err instanceof Error ? err.message : 'Speichern fehlgeschlagen.')
+    if (err instanceof ApiError && err.status === 401) {
+      alert('Deine Anmeldung ist abgelaufen. Bitte neu anmelden – die letzte Änderung wurde nicht gespeichert.')
+      await void showView()
+    } else {
+      alert(err instanceof Error ? err.message : 'Speichern fehlgeschlagen.')
+    }
     return false
+  } finally {
+    saving = false
+    document.body.classList.remove('is-saving')
   }
 }
 
@@ -91,35 +65,50 @@ const dashView = qs('[data-dashboard]')
 const loginForm = qs<HTMLFormElement>('[data-login-form]')
 const loginError = qs('[data-login-error]')
 
-function showView(): void {
-  const loggedIn = session.get()
+async function showView(): Promise<void> {
+  let loggedIn = false
+  try {
+    const s = await getSession()
+    loggedIn = s.loggedIn
+    if (!s.configured) loginError.textContent = 'Auf dem Server ist noch kein Admin-Passwort eingerichtet.'
+  } catch (err) {
+    loginError.textContent = err instanceof Error ? err.message : 'Server nicht erreichbar.'
+  }
   loginView.hidden = loggedIn
   dashView.hidden = !loggedIn
-  if (loggedIn) renderAll()
-  else qs<HTMLInputElement>('#password').focus()
+  if (loggedIn) {
+    await initData()
+    renderAll()
+  } else {
+    qs<HTMLInputElement>('#password').focus()
+  }
 }
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault()
   const input = qs<HTMLInputElement>('#password')
-  if (!window.isSecureContext || !crypto.subtle) {
-    loginError.textContent = 'Login nur über https:// oder localhost möglich.'
-    return
-  }
-  if ((await sha256(input.value)) === PASSWORD_HASH) {
-    session.set(true)
+  const button = loginForm.querySelector<HTMLButtonElement>('button[type="submit"]')
+  if (button) button.disabled = true
+  try {
+    await login(input.value)
     input.value = ''
     loginError.textContent = ''
-    showView()
-  } else {
-    loginError.textContent = 'Falsches Passwort.'
+    await showView()
+  } catch (err) {
+    loginError.textContent = err instanceof Error ? err.message : 'Anmeldung fehlgeschlagen.'
     input.select()
+  } finally {
+    if (button) button.disabled = false
   }
 })
 
-qs('[data-logout]').addEventListener('click', () => {
-  session.set(false)
-  showView()
+qs('[data-logout]').addEventListener('click', async () => {
+  try {
+    await logout()
+  } catch {
+    // auch ohne Server-Antwort lokal abmelden
+  }
+  await showView()
 })
 
 // --- Tabs ---------------------------------------------------------------------
@@ -150,21 +139,24 @@ tabs.forEach((tab, i) => {
 function photoField(input: HTMLInputElement, preview: HTMLImageElement, removeBtn: HTMLButtonElement) {
   let value = ''
   const show = () => {
-    const has = isImageDataUrl(value)
+    const has = Boolean(value)
     preview.hidden = !has
     removeBtn.hidden = !has
-    if (has) preview.src = value
+    if (has) preview.src = imageSrc(value)
     else preview.removeAttribute('src')
   }
   input.addEventListener('change', async () => {
     const file = input.files?.[0]
     if (!file) return
+    input.disabled = true
     try {
-      value = await fileToResizedDataUrl(file)
+      value = await uploadImage(await fileToResizedBlob(file, 800, 0.82))
       show()
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Bild konnte nicht verarbeitet werden.')
+      alert(err instanceof Error ? err.message : 'Bild konnte nicht hochgeladen werden.')
       input.value = ''
+    } finally {
+      input.disabled = false
     }
   })
   removeBtn.addEventListener('click', () => {
@@ -233,7 +225,7 @@ function editMember(m: Member): void {
   qs<HTMLInputElement>('#m-name').focus({ preventScroll: true })
 }
 
-mForm.addEventListener('submit', (e) => {
+mForm.addEventListener('submit', async (e) => {
   e.preventDefault()
   const f = mForm.elements
   const id = (f.namedItem('id') as HTMLInputElement).value
@@ -256,7 +248,7 @@ mForm.addEventListener('submit', (e) => {
     photo: mPhoto.get(),
   }
   const members = id ? data.members.map((m) => (m.id === id ? entry : m)) : [...data.members, entry]
-  if (persist({ ...data, members }, id ? 'Mitglied gespeichert.' : 'Mitglied hinzugefügt.')) {
+  if (await persist({ ...data, members }, id ? 'Mitglied gespeichert.' : 'Mitglied hinzugefügt.')) {
     resetMemberForm()
     renderMembers()
     renderMemberNameOptions()
@@ -276,8 +268,8 @@ function renderMembers(): void {
       el(
         'li',
         {},
-        isImageDataUrl(m.photo)
-          ? el('img', { class: 'admin-list__thumb', src: m.photo, alt: '' })
+        m.photo
+          ? el('img', { class: 'admin-list__thumb', src: imageSrc(m.photo), alt: '' })
           : el('div', { class: 'admin-list__thumb admin-list__thumb--year', text: initials(m.name) }),
         el(
           'div',
@@ -287,13 +279,12 @@ function renderMembers(): void {
         ),
         listActions(
           () => editMember(m),
-          () => {
+          async () => {
             if (!confirm(`„${m.name}“ wirklich löschen?`)) return
-            if (persist({ ...data, members: data.members.filter((x) => x.id !== m.id) }, 'Mitglied gelöscht.')) {
+            if (await persist({ ...data, members: data.members.filter((x) => x.id !== m.id) }, 'Mitglied gelöscht.')) {
               resetMemberForm()
               renderMembers()
               renderMemberNameOptions()
-    renderMemberNameOptions()
             }
           },
           m.name,
@@ -312,13 +303,9 @@ const pGalleryList = qs('[data-play-gallery-edit]')
 
 /** Bild-IDs der Galerie im Formular (Reihenfolge = Anzeigereihenfolge). */
 let gallery: string[] = []
-let galleryUrls: string[] = []
 
 async function renderGalleryEdit(): Promise<void> {
-  galleryUrls.forEach((u) => URL.revokeObjectURL(u))
-  galleryUrls = []
-  const urls = await Promise.all(gallery.map(imageUrl))
-  galleryUrls = urls.filter((u): u is string => Boolean(u))
+  const urls = gallery.map(imageSrc)
 
   const tool = (label: string, text: string, onClick: () => void, disabled = false) => {
     const b = el('button', { type: 'button', 'aria-label': label, title: label, text })
@@ -370,7 +357,8 @@ pPhotosInput.addEventListener('change', async () => {
   try {
     for (const [i, file] of files.entries()) {
       pPhotosStatus.textContent = `Bilder werden verarbeitet … ${i + 1} / ${files.length}`
-      gallery.push(await putImage(await fileToResizedBlob(file)))
+      pPhotosStatus.textContent = `Bilder werden hochgeladen … ${i + 1} / ${files.length}`
+      gallery.push(await uploadImage(await fileToResizedBlob(file)))
     }
   } catch (err) {
     alert(err instanceof Error ? err.message : 'Bild konnte nicht gespeichert werden.')
@@ -475,10 +463,7 @@ function editPlay(p: Play): void {
   qs<HTMLInputElement>('#p-title').focus({ preventScroll: true })
 }
 
-/** Bilder, die zu keinem Stück mehr gehören, aus dem Bild-Speicher löschen. */
-const cleanupImages = () => removeUnusedImages(data.plays.flatMap((p) => p.photos)).catch(() => {})
-
-pForm.addEventListener('submit', (e) => {
+pForm.addEventListener('submit', async (e) => {
   e.preventDefault()
   const f = pForm.elements
   const id = (f.namedItem('id') as HTMLInputElement).value
@@ -501,17 +486,14 @@ pForm.addEventListener('submit', (e) => {
     credits: readCredits(),
   }
   const plays = id ? data.plays.map((p) => (p.id === id ? entry : p)) : [...data.plays, entry]
-  if (persist({ ...data, plays }, id ? 'Stück gespeichert.' : 'Stück hinzugefügt.')) {
-    void cleanupImages()
+  if (await persist({ ...data, plays }, id ? 'Stück gespeichert.' : 'Stück hinzugefügt.')) {
     resetPlayForm()
     renderPlays()
   }
 })
 
-qs('[data-play-cancel]').addEventListener('click', () => {
-  resetPlayForm()
-  void cleanupImages()
-})
+// (nicht gespeicherte Uploads räumt der Server später automatisch auf)
+qs('[data-play-cancel]').addEventListener('click', resetPlayForm)
 
 function renderPlays(): void {
   const list = qs('[data-play-admin-list]')
@@ -528,10 +510,9 @@ function renderPlays(): void {
       })
       const actions = listActions(
         () => editPlay(p),
-        () => {
+        async () => {
           if (!confirm(`„${p.title}“ (${p.year}) mit allen Bildern wirklich löschen?`)) return
-          if (persist({ ...data, plays: data.plays.filter((x) => x.id !== p.id) }, 'Stück gelöscht.')) {
-            void cleanupImages()
+          if (await persist({ ...data, plays: data.plays.filter((x) => x.id !== p.id) }, 'Stück gelöscht.')) {
             resetPlayForm()
             renderPlays()
           }
@@ -557,14 +538,8 @@ function renderPlays(): void {
 }
 
 // --- Export / Import / Zurücksetzen ------------------------------------------
-qs('[data-export]').addEventListener('click', async () => {
-  const images: Record<string, string> = {}
-  for (const id of new Set(data.plays.flatMap((p) => p.photos))) {
-    const blob = await getImage(id)
-    if (blob) images[id] = await blobToDataUrl(blob)
-  }
-  const file: ExportFile = { ...data, images }
-  const blob = new Blob([JSON.stringify(file)], { type: 'application/json' })
+qs('[data-export]').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const a = el('a', {
     href: URL.createObjectURL(blob),
     download: `theaterbuehne-daten-${new Date().toISOString().slice(0, 10)}.json`,
@@ -579,32 +554,23 @@ qs<HTMLInputElement>('[data-import]').addEventListener('change', async (e) => {
   input.value = ''
   if (!file) return
   try {
-    const { data: imported, images } = parseImport(await file.text())
-    const count = Object.keys(images).length
-    const question = `${imported.members.length} Mitglieder, ${imported.plays.length} Stücke und ${count} Bilder importieren? Der aktuelle Stand wird ersetzt.`
+    const imported = parseImport(await file.text())
+    const question = `${imported.members.length} Mitglieder und ${imported.plays.length} Stücke importieren? Der aktuelle Stand auf dem Server wird ersetzt.`
     if (!confirm(question)) return
-    for (const [id, url] of Object.entries(images)) await putImage(await dataUrlToBlob(url), id)
-    if (persist(imported, 'Daten importiert.')) {
-      void cleanupImages()
-      renderAll()
-    }
+    if (await persist(imported, 'Daten importiert.')) renderAll()
   } catch (err) {
     alert(err instanceof Error ? err.message : 'Import fehlgeschlagen.')
   }
 })
 
 qs('[data-reset]').addEventListener('click', async () => {
-  if (!confirm('Alle Änderungen (inkl. aller Bilder) verwerfen und die Standarddaten wiederherstellen?')) return
-  resetData()
-  await clearImages()
-  data = defaultData()
-  toast('Standarddaten wiederhergestellt.')
-  renderAll()
+  if (!confirm('Alle Inhalte auf dem Server durch die Standarddaten ersetzen? Texte, Bilder und Rollen der Stücke gehen verloren.')) return
+  if (await persist(defaultData(), 'Standarddaten wiederhergestellt.')) renderAll()
 })
 
 function renderAll(): void {
-  renderMemberNameOptions()
   data = loadData()
+  renderMemberNameOptions()
   resetMemberForm()
   resetPlayForm()
   renderMembers()

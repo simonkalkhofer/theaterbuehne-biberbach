@@ -27,3 +27,6 @@ dist-ssr
 graphify-out/cache/
 graphify-out/.graphify_*
 graphify-out/.vocab.txt
+
+# lokale Testdaten des Servers (auf Railway: Volume)
+.devdata/

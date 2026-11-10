@@ -39,10 +39,5 @@ export function isEmail(value: string): boolean {
   return /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value)
 }
 
-/** Nur Bilder als Data-URL zulassen (verhindert z. B. javascript:-URLs). */
-export function isImageDataUrl(value: string): boolean {
-  return /^data:image\/(jpeg|png|webp|gif);base64,[a-z0-9+/=]+$/i.test(value)
-}
-
 export const prefersReducedMotion = (): boolean =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches

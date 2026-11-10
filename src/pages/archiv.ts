@@ -2,7 +2,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import '../common'
 import { initReveal } from '../common'
-import { loadData, onDataChange, playsByYear, playUrl, type Play } from '../data/store'
+import { initData, loadData, onDataChange, playsByYear, playUrl, type Play } from '../data/store'
 import { el, prefersReducedMotion, qs } from '../lib/dom'
 
 let progressTrigger: ScrollTrigger | null = null
@@ -52,5 +52,6 @@ function render(): void {
   ScrollTrigger.refresh()
 }
 
+await initData()
 render()
 onDataChange(render)
