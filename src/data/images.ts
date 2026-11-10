@@ -5,7 +5,7 @@
  * IndexedDB bietet deutlich mehr Platz. Wie localStorage gilt auch dieser
  * Speicher nur für den eigenen Browser auf dem eigenen Gerät.
  */
-import { isStaticImage, uid } from './store'
+import { uid } from './store'
 
 const DB_NAME = 'tbb-images'
 const STORE = 'images'
@@ -106,8 +106,6 @@ export async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
 
 /** Objekt-URL für ein gespeichertes Bild (oder null, wenn es fehlt). */
 export async function imageUrl(id: string): Promise<string | null> {
-  // mitgelieferte Bilder (z. B. Demo-Fotos in public/demo/) direkt über ihren Pfad laden
-  if (isStaticImage(id)) return id
   const blob = await getImage(id)
   return blob ? URL.createObjectURL(blob) : null
 }

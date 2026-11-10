@@ -214,8 +214,9 @@ html.lenis body {
 }
 
 .site-header__logo img {
-  width: auto;
-  height: 40px;
+  /* Logo-Zeichen ohne Schriftzug */
+  width: 44px;
+  height: 44px;
 }
 
 .site-nav ul {

@@ -1,17 +1,17 @@
 # Graph Report - Theaterbuehne-Biberbach  (2026-11-10)
 
 ## Corpus Check
-- 23 files · ~13,696 words
+- 21 files · ~12,102 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
 ## Summary
-- 251 nodes · 509 edges · 13 communities (10 shown, 3 thin omitted)
-- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 22 edges (avg confidence: 0.89)
+- 241 nodes · 486 edges · 12 communities (10 shown, 2 thin omitted)
+- Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `06c8a44a`
+- Built from commit: `f48537b0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -23,18 +23,17 @@
 - stueck.ts
 - images.ts
 - .oxlintrc.json
-- qs
+- el
 - Theaterbühne Biberbach – Webseite
 - tsconfig.json
 - startStage
 - store.ts
-- QUELLEN.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `qs()` - 26 edges
 2. `el()` - 23 edges
 3. `compilerOptions` - 17 edges
-4. `loadData()` - 16 edges
+4. `loadData()` - 15 edges
 5. `startStage()` - 15 edges
 6. `compilerOptions` - 15 edges
 7. `prefersReducedMotion()` - 14 edges
@@ -43,21 +42,21 @@
 10. `render()` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Aufbau` --references--> `cast()`  [INFERRED]
-  CLAUDE.md → src/data/demo-plays.ts
 - `Regeln` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 - `Skills für diese Webseite` --references--> `run()`  [INFERRED]
   CLAUDE.md → src/data/images.ts
-- `Aufbau` --references--> `crew()`  [INFERRED]
-  CLAUDE.md → src/data/demo-plays.ts
 - `Aufbau` --references--> `el()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Aufbau` --references--> `qs()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Aufbau` --references--> `prefersReducedMotion()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (13 total, 3 thin omitted)
+## Communities (12 total, 2 thin omitted)
 
 ### Community 0 - "package.json"
 Cohesion: 0.09
@@ -73,19 +72,19 @@ Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib
 
 ### Community 3 - "admin.ts"
 Cohesion: 0.07
-Nodes (29): resetData(), saveData(), drawResized(), fileToResizedBlob(), fileToResizedDataUrl(), creditRows, dashView, data (+21 more)
+Nodes (45): byLastName(), lastName(), saveData(), qs(), drawResized(), fileToResizedBlob(), fileToResizedDataUrl(), addCreditRow() (+37 more)
 
 ### Community 4 - "stueck.ts"
-Cohesion: 0.10
-Nodes (34): gsap, getLenis(), initReveal(), initSmoothScroll(), findPlay(), onDataChange(), playsByYear(), playUrl() (+26 more)
+Cohesion: 0.12
+Nodes (23): gsap, getLenis(), initSmoothScroll(), findPlay(), Play, prefersReducedMotion(), buildCurtain(), initPageCurtain() (+15 more)
 
 ### Community 5 - "images.ts"
-Cohesion: 0.12
-Nodes (21): Aufbau, Effekte (Stand), ⚠️ Pflicht zuerst: graphify statt Code durchlesen, Regeln, Skills für diese Webseite, Stack, Webseite Theaterbühne Biberbach, crew() (+13 more)
+Cohesion: 0.13
+Nodes (19): Aufbau, Effekte (Stand), ⚠️ Pflicht zuerst: graphify statt Code durchlesen, Regeln, Skills für diese Webseite, Stack, Webseite Theaterbühne Biberbach, allImageIds() (+11 more)
 
-### Community 7 - "qs"
-Cohesion: 0.17
-Nodes (27): byLastName(), lastName(), Member, el(), initials(), isEmail(), isImageDataUrl(), qs() (+19 more)
+### Community 7 - "el"
+Cohesion: 0.18
+Nodes (22): initReveal(), loadData(), onDataChange(), playsByYear(), playUrl(), el(), initials(), isEmail() (+14 more)
 
 ### Community 8 - "Theaterbühne Biberbach – Webseite"
 Cohesion: 0.40
@@ -97,25 +96,25 @@ Nodes (20): Actor, LINES, Options, pick(), rand(), Spot, startStage(), createAct
 
 ### Community 11 - "store.ts"
 Cohesion: 0.16
-Nodes (22): cast(), DEMO_PLAYS, demoPhotos(), DemoPlay, BOARD, CHANGE_EVENT, Credit, defaultData() (+14 more)
+Nodes (17): BOARD, CHANGE_EVENT, Credit, defaultData(), ExportFile, isSiteData(), Member, member() (+9 more)
 
 ## Knowledge Gaps
-- **3 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `gsap` connect `stueck.ts` to `package.json`?**
-  _High betweenness centrality (0.123) - this node is a cross-community bridge._
+- **Why does `gsap` connect `stueck.ts` to `package.json`, `el`?**
+  _High betweenness centrality (0.126) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `el()` (e.g. with `Aufbau` and `Regeln`) actually correct?**
   _`el()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.0873015873015873 - nodes in this community are weakly interconnected._
-- **Why does `startStage()` connect `startStage` to `stueck.ts`?**
-  _High betweenness centrality (0.080) - this node is a cross-community bridge._
+- **Why does `startStage()` connect `startStage` to `el`?**
+  _High betweenness centrality (0.084) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
-- **Why does `qs()` connect `qs` to `admin.ts`, `stueck.ts`, `images.ts`?**
-  _High betweenness centrality (0.054) - this node is a cross-community bridge._
+- **Why does `qs()` connect `admin.ts` to `stueck.ts`, `images.ts`, `el`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._

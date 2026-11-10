@@ -31,4 +31,3 @@ npm run lint
 - Vite, TypeScript (ohne Framework), GSAP + ScrollTrigger, Lenis
 - Schrift Montserrat, selbst gehostet
 - `graphify-out/`: Code-Wissensgraph (graphify), Überblick in `graphify-out/GRAPH_REPORT.md`
-- `public/demo/`: Platzhalter-Fotos (CC0/Public Domain von Wikimedia Commons, Quellen in `public/demo/QUELLEN.md`)
