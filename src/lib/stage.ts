@@ -311,7 +311,7 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
       const bx = x + a.dir * unit * 0.25
       const by = y - unit * 1.12 * a.size
       const fs = Math.max(10, unit * 0.2)
-      c.font = `800 ${fs}px 'Montserrat Variable', sans-serif`
+      c.font = `800 ${fs}px 'Barlow Condensed', sans-serif`
       const tw = c.measureText(a.line).width
       const bw = tw + fs * 1.1
       const bh = fs * 1.6

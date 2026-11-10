@@ -30,5 +30,5 @@ npm run lint
 ## Technik
 
 - Vite, TypeScript (ohne Framework), GSAP + ScrollTrigger, Lenis
-- Schrift Montserrat, selbst gehostet
+- Schrift Barlow Condensed (Überschriften, wie Logo-Schriftzug) + Barlow (Text), selbst gehostet
 - `graphify-out/`: Code-Wissensgraph (graphify), Überblick in `graphify-out/GRAPH_REPORT.md`

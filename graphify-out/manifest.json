@@ -6,9 +6,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1794335988.0,
-    "seen": 1794336387.062168,
-    "ast_hash": "fff941ba089ebc0acf2a3a4a91ac10e2",
+    "mtime": 1794343132.0,
+    "seen": 1794343212.1201956,
+    "ast_hash": "d36111997c75c3e4db703cb70650ac37",
     "semantic_hash": ""
   },
   "tsconfig.app.json": {
@@ -36,15 +36,15 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794336380.0,
-    "seen": 1794336387.0622106,
-    "ast_hash": "834c435ecc5011783c1c1371646dd0c9",
+    "mtime": 1794343152.0,
+    "seen": 1794343212.120241,
+    "ast_hash": "90845aaffddafd5ecc08cea03a61c944",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794336380.0,
-    "seen": 1794336387.0622141,
-    "ast_hash": "e8971859669f2eb1e23f1aafab5a04ec",
+    "mtime": 1794343152.0,
+    "seen": 1794343212.1202443,
+    "ast_hash": "6a2a69742b01c30f13a6d531e250b454",
     "semantic_hash": ""
   },
   "index.html": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/lib/stage.ts": {
-    "mtime": 1794331916.0,
-    "seen": 1794331930.6408446,
-    "ast_hash": "94119b34d4be0fe3ebb144738357574e",
+    "mtime": 1794343144.0,
+    "seen": 1794343212.120223,
+    "ast_hash": "bfb2a8a98d8eee28e50da14ed0d33199",
     "semantic_hash": ""
   },
   "src/pages/stueck.ts": {
@@ -246,9 +246,9 @@
     "semantic_hash": ""
   },
   "package-lock.json": {
-    "mtime": 1793794524.0,
-    "seen": 1793794956.6743195,
-    "ast_hash": "7dd7d604b2d0d73d6ba82d00d309894a",
+    "mtime": 1794343132.0,
+    "seen": 1794343212.1202698,
+    "ast_hash": "d71a6b8b3d0d87a0a634676b2962eccf",
     "semantic_hash": ""
   }
 }

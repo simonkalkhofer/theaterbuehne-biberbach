@@ -1,4 +1,10 @@
-@import '@fontsource-variable/montserrat';
+/* Schrift ähnlich dem Logo-Schriftzug (schmale, fette Grotesk) – selbst gehostet, DSGVO */
+@import '@fontsource/barlow/400.css';
+@import '@fontsource/barlow/500.css';
+@import '@fontsource/barlow/600.css';
+@import '@fontsource/barlow/700.css';
+@import '@fontsource/barlow-condensed/600.css';
+@import '@fontsource/barlow-condensed/700.css';
 
 /* ==========================================================================
    Design-Tokens
@@ -13,7 +19,8 @@
   --red: #e62b34;            /* helles Akzent-Rot (rotes „B“) */
   --red-hover: #ff4049;
 
-  --font: 'Montserrat Variable', 'Montserrat', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+  --font: 'Barlow', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Barlow Condensed', 'Arial Narrow', 'Barlow', sans-serif;
   --radius: 4px;
   --gutter: clamp(1rem, 4vw, 3rem);
   --max: 1200px;
@@ -37,8 +44,10 @@ html {
 body {
   margin: 0;
   font-family: var(--font);
-  font-weight: 450;
+  font-weight: 400;
+  font-size: 1.05rem;
   line-height: 1.6;
+  font-synthesis: none;
   color: var(--ink);
   background: var(--white);
   -webkit-font-smoothing: antialiased;
@@ -58,6 +67,7 @@ h1,
 h2,
 h3 {
   margin: 0 0 0.5em;
+  font-family: var(--font-display);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.01em;
@@ -1818,4 +1828,49 @@ html.curtain-in::after {
 
 [hidden] {
   display: none !important;
+}
+
+/* Logo-Schrift (schmal + fett) für Überschriften, Knöpfe, Menü, Jahreszahlen.
+   Nur 600/700 geladen: font-weight 800 nutzt das Bold wie im Logo-Schriftzug. */
+.btn,
+.eyebrow,
+.site-nav a,
+.tabs button,
+.stats strong,
+.latest__year,
+.person__placeholder,
+.person__name,
+.timeline__year,
+.play-hero__year,
+.play-text p:first-child::first-letter,
+.admin-list__thumb--year {
+  font-family: var(--font-display);
+}
+
+/* Schmale Schrift wirkt kleiner → kleine Beschriftungen etwas größer */
+.site-nav a {
+  font-size: 1rem;
+}
+
+.btn {
+  font-size: 0.98rem;
+}
+
+.btn--small {
+  font-size: 0.85rem;
+}
+
+.eyebrow,
+.tabs button {
+  font-size: 0.9rem;
+}
+
+.person__name {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 720px) {
+  .site-nav a {
+    font-size: 1.15rem;
+  }
 }

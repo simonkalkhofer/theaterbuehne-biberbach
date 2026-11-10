@@ -50,7 +50,7 @@ Neue Skills nur nach SkillSpector-Prüfung laut `G:\Claude\CLAUDE.md`.
   Hosting auf **Railway** mit Volume (siehe `DEPLOY.md`). Lokal: `npm.cmd run dev:server` (Port 3000,
   Daten in `.devdata/`, Passwort `theater123`) + `npm.cmd run dev` (Vite leitet `/api` weiter).
 - GSAP 3 (+ ScrollTrigger, SplitText), Lenis
-- Schrift: Montserrat (selbst gehostet über `@fontsource-variable/montserrat`, kein Google-CDN wegen DSGVO)
+- Schrift ähnlich dem Logo-Schriftzug: Überschriften, Knöpfe, Menü, Jahreszahlen in **Barlow Condensed** (`--font-display`), Fließtext in **Barlow** (`--font`); selbst gehostet über `@fontsource/barlow(-condensed)`, kein Google-CDN wegen DSGVO
 - Farben (Tokens in `src/styles/main.css`): Schwarz, 40 %-Grau `#999`, Akzent-Rot `#e62b34`
 
 ## Aufbau
