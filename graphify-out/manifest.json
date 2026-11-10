@@ -36,15 +36,15 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794332778.0,
-    "seen": 1794332781.7654347,
-    "ast_hash": "c9b6098b5851fd4b6045e6485082d4f6",
+    "mtime": 1794333524.0,
+    "seen": 1794333527.3713043,
+    "ast_hash": "d9f18c39fa85718732a0204e65777133",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1794332778.0,
-    "seen": 1794332781.7654364,
-    "ast_hash": "8ba636eb806ba9c0cc8fef7197183a75",
+    "mtime": 1794333524.0,
+    "seen": 1794333527.3713057,
+    "ast_hash": "1152e8e7f1bca696b4cc89f0295d6bb7",
     "semantic_hash": ""
   },
   "index.html": {
@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "src/data/store.ts": {
-    "mtime": 1794332624.0,
-    "seen": 1794332781.7654078,
-    "ast_hash": "6c89d1cb0b25210054f1c271ec2550ae",
+    "mtime": 1794333492.0,
+    "seen": 1794333527.3712764,
+    "ast_hash": "77f1f69b17446c196f4aa1da1be79424",
     "semantic_hash": ""
   },
   "src/lib/dom.ts": {
@@ -210,135 +210,135 @@
     "semantic_hash": ""
   },
   "public/demo/QUELLEN.md": {
-    "mtime": 1794332544.0,
-    "seen": 1794332781.7654452,
-    "ast_hash": "e821faea99a237db7b1d08352ae1d3ab",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.371315,
+    "ast_hash": "8a08da960c2cf97aa72633c783c85810",
     "semantic_hash": ""
   },
   "public/demo/stueck-2015-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765451,
-    "ast_hash": "2e88c5f7f7fc30008aba27030992f937",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.3713205,
+    "ast_hash": "99af09a281dc1e03144377f79317cd2b",
     "semantic_hash": ""
   },
   "public/demo/stueck-2015-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654526,
-    "ast_hash": "b3685448cb8324c5128df1ba985019ac",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.3713222,
+    "ast_hash": "a2bdfc50a6f2061c739dbdf78f22c025",
     "semantic_hash": ""
   },
   "public/demo/stueck-2015-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765454,
-    "ast_hash": "596103f9d901d8b0cbdf996cf7c0eebb",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.3713238,
+    "ast_hash": "7c1f93f2b080514f2b1d3b2298d78394",
     "semantic_hash": ""
   },
   "public/demo/stueck-2016-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765456,
-    "ast_hash": "6c3442bc5ab6ac1612387e9a333055e5",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.3713255,
+    "ast_hash": "84de331962cc8e4db23fe33f74bad81f",
     "semantic_hash": ""
   },
   "public/demo/stueck-2016-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654574,
-    "ast_hash": "6b19f04aec904c1cde958f0539cb096a",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.371327,
+    "ast_hash": "a4f9755f94ee889c2133d6a92c645cee",
     "semantic_hash": ""
   },
   "public/demo/stueck-2016-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654586,
-    "ast_hash": "4daa8591d1561fcd06f28e4cc84cf748",
+    "mtime": 1794333476.0,
+    "seen": 1794333527.3713286,
+    "ast_hash": "80786e00f5c562c211aa155ba4089bdc",
     "semantic_hash": ""
   },
   "public/demo/stueck-2017-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654603,
-    "ast_hash": "9a756bd7b4eadb064c5079092cd892be",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.37133,
+    "ast_hash": "7c56e78a6b9d8a83b864b5edffc47aad",
     "semantic_hash": ""
   },
   "public/demo/stueck-2017-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765463,
-    "ast_hash": "81d49add40a79f3f95eaf415c16312ce",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713317,
+    "ast_hash": "7fb8e48a3ac87665fe2294db23502b4c",
     "semantic_hash": ""
   },
   "public/demo/stueck-2017-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654645,
-    "ast_hash": "644bc58fe2df6357a0454dcb2135cb0a",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713331,
+    "ast_hash": "3f46ff95488091bd338d426bece46860",
     "semantic_hash": ""
   },
   "public/demo/stueck-2018-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654662,
-    "ast_hash": "95915190c831e4c34f4fb405c4baf04d",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713346,
+    "ast_hash": "d28da74ec000c22b72df9e791f3c099e",
     "semantic_hash": ""
   },
   "public/demo/stueck-2018-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654674,
-    "ast_hash": "0b5513929801feae969fbfbf5f796279",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.371336,
+    "ast_hash": "50a7a16181b3043290378a0a618c66be",
     "semantic_hash": ""
   },
   "public/demo/stueck-2018-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654686,
-    "ast_hash": "db90590daad08c708e4885a4661a547a",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713374,
+    "ast_hash": "73014dd09bacfcb2495a43a317eae7a4",
     "semantic_hash": ""
   },
   "public/demo/stueck-2019-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654703,
-    "ast_hash": "3bc13f4e342cdf5c6fca0332e0510455",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713393,
+    "ast_hash": "15952f1b60ba80a70f553e706f6944e3",
     "semantic_hash": ""
   },
   "public/demo/stueck-2019-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654717,
-    "ast_hash": "901e12a8d6bd6cce84e03de719ceca3f",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713405,
+    "ast_hash": "d09f30af9e8531e5247fd9742c997ff0",
     "semantic_hash": ""
   },
   "public/demo/stueck-2019-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654734,
-    "ast_hash": "af0c97837204242749495d577c99ca86",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713424,
+    "ast_hash": "0875fd8b243c1d15a762ec04a65db09f",
     "semantic_hash": ""
   },
   "public/demo/stueck-2023-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654748,
-    "ast_hash": "f8e937151f454ba8863fedaf93075980",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713439,
+    "ast_hash": "8020357979ea60ea90116e4f65a1ec7b",
     "semantic_hash": ""
   },
   "public/demo/stueck-2023-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765476,
-    "ast_hash": "c301ffdd9b2e0f39ac958a72c0f1eb71",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713455,
+    "ast_hash": "e176866d9dc68b2ace797de08c231b09",
     "semantic_hash": ""
   },
   "public/demo/stueck-2023-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.765478,
-    "ast_hash": "7cf26e02f75babbe2025b0d33eaa3a29",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713467,
+    "ast_hash": "84ae83e59118e0b97a30011d137becbb",
     "semantic_hash": ""
   },
   "public/demo/stueck-2025-1.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654793,
-    "ast_hash": "c5b102e64ec87af9f12a12f91cbcc4a0",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713484,
+    "ast_hash": "323d2e157c48f269242d8b7078fa9aec",
     "semantic_hash": ""
   },
   "public/demo/stueck-2025-2.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654808,
-    "ast_hash": "cead82a111dfd682e23a03b37556a41c",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713498,
+    "ast_hash": "e8c136c9cc5ec997c9407d385c1b5d67",
     "semantic_hash": ""
   },
   "public/demo/stueck-2025-3.jpg": {
-    "mtime": 1794332550.0,
-    "seen": 1794332781.7654822,
-    "ast_hash": "afc0df9889b74b3625445363deac25f8",
+    "mtime": 1794333478.0,
+    "seen": 1794333527.3713512,
+    "ast_hash": "d06bcd1db7051d290fb451567fd5151e",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -1,7 +1,7 @@
 # Graph Report - Theaterbuehne-Biberbach  (2026-11-10)
 
 ## Corpus Check
-- 23 files · ~13,340 words
+- 23 files · ~13,696 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a1751bc7`
+- Built from commit: `06c8a44a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,8 +37,8 @@
 4. `loadData()` - 16 edges
 5. `startStage()` - 15 edges
 6. `compilerOptions` - 15 edges
-7. `renderMembers()` - 14 edges
-8. `prefersReducedMotion()` - 14 edges
+7. `prefersReducedMotion()` - 14 edges
+8. `renderMembers()` - 14 edges
 9. `renderPlays()` - 13 edges
 10. `render()` - 10 edges
 
@@ -47,10 +47,10 @@
   CLAUDE.md → src/data/demo-plays.ts
 - `Regeln` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
-- `Aufbau` --references--> `crew()`  [INFERRED]
-  CLAUDE.md → src/data/demo-plays.ts
 - `Skills für diese Webseite` --references--> `run()`  [INFERRED]
   CLAUDE.md → src/data/images.ts
+- `Aufbau` --references--> `crew()`  [INFERRED]
+  CLAUDE.md → src/data/demo-plays.ts
 - `Aufbau` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 

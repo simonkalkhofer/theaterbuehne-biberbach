@@ -195,9 +195,10 @@ function upgradePlaceholderMembers(data: SiteData): SiteData {
 }
 
 /**
- * Stücke aus den Standarddaten, die im Browser noch ganz leer gespeichert sind
- * (kein Text, keine Bilder, keine Rollen), bekommen die Demo-Inhalte.
- * Was der Admin schon eingetragen hat, bleibt unangetastet.
+ * Stücke aus den Standarddaten bekommen fehlende Inhalte aus den Demo-Daten –
+ * Feld für Feld: fehlt der Text, kommt der Demo-Text; fehlen Bilder, kommen die
+ * Demo-Bilder; fehlen Rollen, kommen die Demo-Rollen. Was der Admin selbst
+ * eingetragen hat, bleibt unangetastet.
  */
 function fillEmptyDemoPlays(data: SiteData): SiteData {
   const defaults = new Map(defaultData().plays.map((p) => [p.id, p]))
@@ -205,8 +206,13 @@ function fillEmptyDemoPlays(data: SiteData): SiteData {
     ...data,
     plays: data.plays.map((p) => {
       const demo = defaults.get(p.id)
-      const empty = !p.description && p.photos.length === 0 && p.credits.length === 0
-      return demo && empty ? { ...p, description: demo.description, photos: demo.photos, credits: demo.credits } : p
+      if (!demo) return p
+      return {
+        ...p,
+        description: p.description || demo.description,
+        photos: p.photos.length ? p.photos : demo.photos,
+        credits: p.credits.length ? p.credits : demo.credits,
+      }
     }),
   }
 }

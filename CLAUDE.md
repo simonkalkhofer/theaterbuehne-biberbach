@@ -59,8 +59,8 @@ Neue Skills nur nach SkillSpector-Prüfung laut `G:\Claude\CLAUDE.md`.
 - `src/lib/effects.ts` – Vorhang-Seitenübergang + SplitText-Überschriften (`data-split` am `<h1>/<h2>`)
 - `src/lib/stage.ts` – Miniatur-Theater im Hero (Canvas); Vorhang über `curtain.open` (0–1) per GSAP steuerbar
 - `src/data/store.ts` – Datenmodell + localStorage (`tbb-data-v1`) + Standarddaten (feste IDs, z. B. `stueck-2025`)
-- `src/data/demo-plays.ts` – Fülltexte + Rollen (Besetzung `cast` / Team `crew`) der Stücke; Demo-Fotos in `public/demo/`
-  (Unsplash-Lizenz, Quellen in `public/demo/QUELLEN.md`). Leere Stücke im Browser-Speicher werden damit aufgefüllt.
+- `src/data/demo-plays.ts` – Fülltexte + Rollen (Besetzung `cast` / Team `crew`) der Stücke; Demo-Fotos (passend zum Titel) in `public/demo/`
+  (Wikimedia Commons, nur CC0/Public Domain, Quellen in `public/demo/QUELLEN.md`). Fehlende Felder (Text/Bilder/Rollen) gespeicherter Stücke werden damit einzeln aufgefüllt.
 - `Play.credits` – Rollen & Team je Stück (Detailseite „Besetzung & Team“, im Admin pflegbar)
 - `src/data/images.ts` – Galerie-Bilder als Blobs in IndexedDB (`tbb-images`); `Play.photos` = Bild-IDs
   oder Pfade zu mitgelieferten Bildern (`demo/…jpg`, siehe `isStaticImage()`).
