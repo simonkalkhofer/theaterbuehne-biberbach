@@ -247,9 +247,10 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
   }
 
   /**
-   * Figur im Stil des Logos: runder, frei schwebender Kopf über einem Körper,
-   * der oben abgerundet ist und unten einen Torbogen (Beine) hat – wie die
-   * beiden Figuren, die im Logo das „B“ bilden. Keine Arme, keine Gesichter.
+   * Figur exakt nach den Logo-Figuren (die zwei Figuren, die das „B“ bilden):
+   * runder, frei schwebender Kopf über einem Körper wie ein Rock – oben fast
+   * halbrund, unten GESCHLOSSEN, mit einem Fenster in der Mitte.
+   * Proportionen aus dem Logo gemessen. Keine Beine, keine Arme, kein Gesicht.
    */
   function drawActor(a: Actor) {
     const p = project(a.x, a.t)
@@ -262,11 +263,15 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
     const bob = walking ? Math.abs(Math.cos(a.phase)) * unit * 0.05 : 0
     const bow = a.state === 'bow' ? Math.sin(Math.min(1, (2.2 - a.timer) / 0.6) * Math.PI) * 0.55 : 0
 
-    const bw = unit * 0.46 // Körperbreite
-    const bh = unit * 0.62 // Körperhöhe
-    const r = unit * 0.13 // Kopfradius
-    const archW = bw * 0.36
-    const archH = bh * 0.48
+    // Maße relativ zur Körperbreite – gemessen am Logo-Zeichen
+    const bw = unit * 0.5 // Körperbreite
+    const bh = bw * 1.2 // Körperhöhe
+    const topR = bw * 0.41 // Höhe der Rundung oben (Halbellipse)
+    const r = bw * 0.26 // Kopfradius
+    const gap = r * 0.95 // Abstand Kopf ↔ Körper
+    const winW = bw * 0.44 // Fensterbreite
+    const winBottom = -bh * 0.31 // Unterkante Fenster (darunter geschlossener Rocksaum)
+    const winTop = -bh * 0.67 // Oberkante Fenster
 
     // Schatten
     c.fillStyle = 'rgba(0, 0, 0, 0.45)'
@@ -280,23 +285,24 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
     // Watscheln beim Gehen bzw. Verbeugung – Drehpunkt am Boden
     c.rotate(swing * 0.07 + bow)
 
-    // Körper mit Torbogen (evenodd → Bogen bleibt durchsichtig wie im Logo)
+    // Körper: gerade Seiten, oben Halbellipse, unten geschlossen (Rock)
     c.fillStyle = a.costume
     c.beginPath()
-    c.roundRect(-bw / 2, -bh, bw, bh, [bw * 0.48, bw * 0.48, 0, 0])
-    c.moveTo(-archW / 2, 0)
-    c.lineTo(-archW / 2, -archH + archW / 2)
-    c.arc(0, -archH + archW / 2, archW / 2, Math.PI, 0)
-    c.lineTo(archW / 2, 0)
+    c.moveTo(-bw / 2, 0)
+    c.lineTo(-bw / 2, -bh + topR)
+    c.ellipse(0, -bh + topR, bw / 2, topR, 0, Math.PI, 0)
+    c.lineTo(bw / 2, 0)
     c.closePath()
+    // Fenster mit runden oberen Ecken (evenodd → durchsichtig wie im Logo)
+    c.roundRect(-winW / 2, winTop, winW, winBottom - winTop, [winW * 0.42, winW * 0.42, 0, 0])
     c.fill('evenodd')
 
     // Kopf schwebt mit Abstand über dem Körper; wippt beim Gehen leicht nach
     const nod = talking ? Math.sin(time * 9 + a.phase) * unit * 0.035 : 0
     const lag = walking ? Math.sin(a.phase + 0.9) * unit * 0.025 : 0
-    const headY = -bh - r * 0.55 - r + nod + lag
+    const headY = -bh - gap - r + nod + lag
     c.beginPath()
-    c.arc(r * 0.18, headY, r, 0, Math.PI * 2)
+    c.arc(bw * 0.05, headY, r, 0, Math.PI * 2)
     c.fill()
     c.restore()
 

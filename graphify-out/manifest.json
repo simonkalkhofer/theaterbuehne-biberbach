@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794330078.0,
-    "seen": 1794330081.7884958,
-    "ast_hash": "d6542dbef43fa105f23ccbf49e3ff84b",
+    "mtime": 1794331836.0,
+    "seen": 1794331840.1650796,
+    "ast_hash": "1b86d52684c2da48693dd222336d0bd5",
     "semantic_hash": ""
   },
   "README.md": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/lib/stage.ts": {
-    "mtime": 1794329970.0,
-    "seen": 1794330081.7884762,
-    "ast_hash": "9f42f88d01304ef5fa8bfe282cf61731",
+    "mtime": 1794331812.0,
+    "seen": 1794331840.1650612,
+    "ast_hash": "85648c3f546d04e8280aa8156562bc00",
     "semantic_hash": ""
   },
   "src/data/images.ts": {
