@@ -66,16 +66,54 @@ const play = (year: number, title: string): Play => ({
   photos: [],
 })
 
-/** Standarddaten – Platzhalter für Vorstand/Mitglieder, echte Stücke fürs Archiv. */
+/** Feste ID aus dem Namen, z. B. „Sonja Soxberger“ → „sonja-soxberger“. */
+const slug = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+/** Vorstand in Reihenfolge der Funktionen (Anzeige: Vorname Nachname). */
+const BOARD: [name: string, role: string][] = [
+  ['Sonja Soxberger', 'Obfrau'],
+  ['Thomas Teufel', 'Obfraustellvertreter'],
+  ['Silvia Kalkhofer', 'Kassier'],
+  ['Barbara Gassner', 'Kassierstellvertreter'],
+  ['Petra Jesch', 'Schriftführer'],
+  ['Helga Peschek', 'Schriftführerstellvertreter'],
+]
+
+const MEMBERS = [
+  'Gertrude Aigner',
+  'Thomas Bühringer',
+  'Markus Edermayr',
+  'Ernst Fehringer',
+  'Rudolf Jesch',
+  'Viktoria Kalkhofer',
+  'Anton Kammerhofer',
+  'Michaela Kammerhofer',
+  'Robert Kößl',
+  'Josef Leutgeb',
+  'Anton Ördög',
+  'Hilda Ördög',
+  'Simon Peschek',
+  'Manuela Raaber',
+  'Günther Reisigner',
+  'Franz Schörghuber',
+  'Fabian Soxberger',
+]
+
+/** Standarddaten – Vorstand, Mitglieder und Stücke fürs Archiv. */
 export function defaultData(): SiteData {
   return {
     version: 1,
     members: [
-      member('vorstand-1', 'Name folgt', true, '1. Vorstand'),
-      member('vorstand-2', 'Name folgt', true, '2. Vorstand'),
-      member('vorstand-3', 'Name folgt', true, 'Kassier/in'),
-      member('vorstand-4', 'Name folgt', true, 'Schriftführer/in'),
-      ...[1, 2, 3, 4, 5, 6].map((n) => member(`mitglied-${n}`, `Mitglied ${n}`)),
+      ...BOARD.map(([name, role]) => member(slug(name), name, true, role)),
+      ...MEMBERS.map((name) => member(slug(name), name)),
     ],
     plays: [
       play(2015, 'Alptraum einer Schwiegermutter'),
@@ -122,13 +160,31 @@ export function loadData(): SiteData {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed: unknown = JSON.parse(raw)
-      if (isSiteData(parsed)) return normalize(parsed)
+      if (isSiteData(parsed)) return upgradePlaceholderMembers(normalize(parsed))
     }
   } catch {
     // localStorage nicht verfügbar oder Daten beschädigt → Standarddaten
   }
   return defaultData()
 }
+
+/**
+ * Wurden im Browser schon Daten gespeichert, als es nur Platzhalter-Mitglieder gab
+ * („Name folgt“, „Mitglied 1“ …), werden diese durch die echten Mitglieder ersetzt.
+ * Stücke, Texte und Bilder bleiben unverändert.
+ */
+function upgradePlaceholderMembers(data: SiteData): SiteData {
+  const onlyPlaceholders =
+    data.members.length > 0 && data.members.every((m) => /^(name folgt|mitglied \d+)$/i.test(m.name))
+  return onlyPlaceholders ? { ...data, members: defaultData().members } : data
+}
+
+/** Nachname = letztes Wort des Namens (für alphabetische Sortierung). */
+export const lastName = (name: string): string => name.trim().split(/\s+/).pop() ?? name
+
+/** Sortiert nach Nachname, dann Vorname. */
+export const byLastName = (a: { name: string }, b: { name: string }): number =>
+  lastName(a.name).localeCompare(lastName(b.name), 'de') || a.name.localeCompare(b.name, 'de')
 
 /** Speichert die Daten. Wirft einen Fehler, wenn der Speicher voll/nicht verfügbar ist. */
 export function saveData(data: SiteData): void {

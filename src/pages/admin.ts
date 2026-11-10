@@ -16,6 +16,7 @@ import {
   removeUnusedImages,
 } from '../data/images'
 import {
+  byLastName,
   defaultData,
   loadData,
   parseImport,
@@ -265,7 +266,7 @@ qs('[data-member-cancel]').addEventListener('click', resetMemberForm)
 function renderMembers(): void {
   const list = qs('[data-member-admin-list]')
   const sorted = [...data.members].sort(
-    (a, b) => Number(b.board) - Number(a.board) || a.name.localeCompare(b.name, 'de'),
+    (a, b) => Number(b.board) - Number(a.board) || (a.board ? 0 : byLastName(a, b)),
   )
   qs('[data-member-count]').textContent = String(sorted.length)
   list.replaceChildren(

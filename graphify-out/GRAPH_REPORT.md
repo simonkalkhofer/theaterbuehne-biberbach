@@ -1,17 +1,17 @@
-# Graph Report - Theaterbuehne-Biberbach  (2026-11-06)
+# Graph Report - Theaterbuehne-Biberbach  (2026-11-10)
 
 ## Corpus Check
-- 21 files · ~11,234 words
+- 21 files · ~11,435 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
 ## Summary
-- 227 nodes · 449 edges · 12 communities (10 shown, 2 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.88)
+- 233 nodes · 463 edges · 12 communities (10 shown, 2 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `a067c738`
+- Built from commit: `28ecfab6`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,9 +21,9 @@
 - compilerOptions
 - admin.ts
 - stueck.ts
-- images.ts
+- Webseite Theaterbühne Biberbach
 - .oxlintrc.json
-- el
+- qs
 - Theaterbühne Biberbach – Webseite
 - tsconfig.json
 - startStage
@@ -33,24 +33,24 @@
 1. `qs()` - 23 edges
 2. `el()` - 20 edges
 3. `compilerOptions` - 17 edges
-4. `startStage()` - 15 edges
-5. `compilerOptions` - 15 edges
-6. `loadData()` - 14 edges
+4. `loadData()` - 15 edges
+5. `startStage()` - 15 edges
+6. `compilerOptions` - 15 edges
 7. `prefersReducedMotion()` - 14 edges
-8. `renderPlays()` - 13 edges
-9. `renderMembers()` - 12 edges
-10. `playsByYear()` - 9 edges
+8. `renderMembers()` - 13 edges
+9. `renderPlays()` - 13 edges
+10. `playUrl()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Regeln` --references--> `el()`  [INFERRED]
-  CLAUDE.md → src/lib/dom.ts
 - `Skills für diese Webseite` --references--> `run()`  [INFERRED]
   CLAUDE.md → src/data/images.ts
-- `Aufbau` --references--> `el()`  [INFERRED]
+- `Regeln` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 - `Aufbau` --references--> `prefersReducedMotion()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 - `Aufbau` --references--> `qs()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Aufbau` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 
 ## Import Cycles
@@ -71,20 +71,20 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+8 more)
 
 ### Community 3 - "admin.ts"
-Cohesion: 0.08
-Nodes (37): saveData(), drawResized(), fileToResizedBlob(), fileToResizedDataUrl(), dashView, data, editMember(), editPlay() (+29 more)
+Cohesion: 0.07
+Nodes (39): allImageIds(), blobToDataUrl(), clearImages(), dataUrlToBlob(), deleteImages(), getImage(), imageUrl(), openDb() (+31 more)
 
 ### Community 4 - "stueck.ts"
 Cohesion: 0.10
-Nodes (37): Aufbau, gsap@^3.15.1, gsap, getLenis(), initReveal(), initSmoothScroll(), findPlay(), loadData() (+29 more)
+Nodes (34): gsap@^3.15.1, gsap, getLenis(), initReveal(), initSmoothScroll(), findPlay(), onDataChange(), Play (+26 more)
 
-### Community 5 - "images.ts"
-Cohesion: 0.14
-Nodes (18): Effekte (Stand), ⚠️ Pflicht zuerst: graphify statt Code durchlesen, Regeln, Skills für diese Webseite, Stack, Webseite Theaterbühne Biberbach, allImageIds(), blobToDataUrl() (+10 more)
+### Community 5 - "Webseite Theaterbühne Biberbach"
+Cohesion: 0.25
+Nodes (7): Aufbau, Effekte (Stand), ⚠️ Pflicht zuerst: graphify statt Code durchlesen, Regeln, Skills für diese Webseite, Stack, Webseite Theaterbühne Biberbach
 
-### Community 7 - "el"
-Cohesion: 0.47
-Nodes (9): el(), initials(), isEmail(), isImageDataUrl(), boardCard(), fill(), memberCard(), photo() (+1 more)
+### Community 7 - "qs"
+Cohesion: 0.23
+Nodes (21): byLastName(), el(), initials(), isEmail(), isImageDataUrl(), qs(), editMember(), editPlay() (+13 more)
 
 ### Community 8 - "Theaterbühne Biberbach – Webseite"
 Cohesion: 0.40
@@ -95,8 +95,8 @@ Cohesion: 0.16
 Nodes (20): Actor, LINES, Options, pick(), rand(), Spot, startStage(), createActors() (+12 more)
 
 ### Community 11 - "store.ts"
-Cohesion: 0.23
-Nodes (12): CHANGE_EVENT, defaultData(), ExportFile, isSiteData(), Member, member(), normalize(), parseImport() (+4 more)
+Cohesion: 0.18
+Nodes (18): BOARD, CHANGE_EVENT, defaultData(), ExportFile, isSiteData(), lastName(), loadData(), Member (+10 more)
 
 ## Knowledge Gaps
 - **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
@@ -105,16 +105,16 @@ Nodes (12): CHANGE_EVENT, defaultData(), ExportFile, isSiteData(), Member, membe
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `gsap` connect `stueck.ts` to `package.json`?**
-  _High betweenness centrality (0.130) - this node is a cross-community bridge._
+  _High betweenness centrality (0.129) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `el()` (e.g. with `Aufbau` and `Regeln`) actually correct?**
   _`el()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Should `package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.09116809116809117 - nodes in this community are weakly interconnected._
 - **Why does `startStage()` connect `startStage` to `stueck.ts`?**
-  _High betweenness centrality (0.086) - this node is a cross-community bridge._
+  _High betweenness centrality (0.085) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
-- **Why does `qs()` connect `stueck.ts` to `admin.ts`, `el`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+- **Why does `qs()` connect `qs` to `admin.ts`, `stueck.ts`, `Webseite Theaterbühne Biberbach`?**
+  _High betweenness centrality (0.053) - this node is a cross-community bridge._
 - **Should `compilerOptions` be split into smaller, more focused modules?**
   _Cohesion score 0.11764705882352941 - nodes in this community are weakly interconnected._

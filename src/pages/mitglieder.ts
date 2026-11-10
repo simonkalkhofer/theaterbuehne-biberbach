@@ -1,6 +1,6 @@
 import '../common'
 import { initReveal } from '../common'
-import { loadData, onDataChange, type Member } from '../data/store'
+import { byLastName, loadData, onDataChange, type Member } from '../data/store'
 import { el, initials, isEmail, isImageDataUrl, qs } from '../lib/dom'
 
 /** Platzhalter-Namen aus den Standarddaten bekommen eine Silhouette statt Initialen. */
@@ -48,7 +48,7 @@ function fill(list: HTMLElement, items: HTMLLIElement[], emptyText: string): voi
 function render(): void {
   const { members } = loadData()
   const board = members.filter((m) => m.board)
-  const others = members.filter((m) => !m.board).sort((a, b) => a.name.localeCompare(b.name, 'de'))
+  const others = members.filter((m) => !m.board).sort(byLastName)
 
   fill(qs('[data-board-list]'), board.map(boardCard), 'Der Vorstand wird bald vorgestellt.')
   fill(qs('[data-member-list]'), others.map(memberCard), 'Hier werden bald unsere Mitglieder vorgestellt.')
