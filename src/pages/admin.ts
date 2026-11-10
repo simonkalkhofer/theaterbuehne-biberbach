@@ -25,6 +25,7 @@ import {
   resetData,
   saveData,
   uid,
+  type Credit,
   type ExportFile,
   type Member,
   type Play,
@@ -258,6 +259,7 @@ mForm.addEventListener('submit', (e) => {
   if (persist({ ...data, members }, id ? 'Mitglied gespeichert.' : 'Mitglied hinzugefügt.')) {
     resetMemberForm()
     renderMembers()
+    renderMemberNameOptions()
   }
 })
 
@@ -290,6 +292,8 @@ function renderMembers(): void {
             if (persist({ ...data, members: data.members.filter((x) => x.id !== m.id) }, 'Mitglied gelöscht.')) {
               resetMemberForm()
               renderMembers()
+              renderMemberNameOptions()
+    renderMemberNameOptions()
             }
           },
           m.name,
@@ -376,11 +380,77 @@ pPhotosInput.addEventListener('change', async () => {
   }
 })
 
+// --- Rollen & Team (Credits) im Stück-Formular ---------------------------------
+const creditRows = qs('[data-credit-rows]')
+
+function addCreditRow(credit: Credit = { role: '', name: '', group: 'cast' }): void {
+  const group = el(
+    'select',
+    { 'aria-label': 'Art', 'data-credit-group': '' },
+    el('option', { value: 'cast', text: 'Rolle' }),
+    el('option', { value: 'crew', text: 'Team' }),
+  )
+  group.value = credit.group
+  const role = el('input', {
+    'aria-label': 'Rolle bzw. Aufgabe',
+    placeholder: credit.group === 'crew' ? 'z. B. Regie' : 'z. B. Opa Willi',
+    maxlength: '80',
+    'data-credit-role': '',
+  })
+  role.value = credit.role
+  const name = el('input', {
+    'aria-label': 'Name',
+    placeholder: 'Name',
+    list: 'member-names',
+    maxlength: '80',
+    'data-credit-name': '',
+  })
+  name.value = credit.name
+  const remove = el('button', { type: 'button', class: 'btn btn--danger btn--small', 'aria-label': 'Zeile entfernen', text: '×' })
+  const row = el('div', { class: 'credit-row' }, group, role, name, remove)
+  remove.addEventListener('click', () => row.remove())
+  group.addEventListener('change', () => {
+    role.placeholder = group.value === 'crew' ? 'z. B. Regie' : 'z. B. Opa Willi'
+  })
+  creditRows.append(row)
+}
+
+function setCredits(credits: Credit[]): void {
+  creditRows.replaceChildren()
+  // Team zuerst (Regie …), dann die Rollen
+  ;[...credits].sort((a, b) => (a.group === b.group ? 0 : a.group === 'crew' ? -1 : 1)).forEach((c) => addCreditRow(c))
+}
+
+function readCredits(): Credit[] {
+  return [...creditRows.querySelectorAll<HTMLElement>('.credit-row')]
+    .map((row) => ({
+      group: (qs<HTMLSelectElement>('[data-credit-group]', row).value === 'crew' ? 'crew' : 'cast') as Credit['group'],
+      role: qs<HTMLInputElement>('[data-credit-role]', row).value.trim(),
+      name: qs<HTMLInputElement>('[data-credit-name]', row).value.trim(),
+    }))
+    .filter((c) => c.role || c.name)
+}
+
+document.querySelectorAll<HTMLButtonElement>('[data-credit-add]').forEach((btn) =>
+  btn.addEventListener('click', () => {
+    addCreditRow({ role: '', name: '', group: btn.dataset.creditAdd === 'crew' ? 'crew' : 'cast' })
+    creditRows.querySelector<HTMLInputElement>('.credit-row:last-child [data-credit-role]')?.focus()
+  }),
+)
+
+/** Namensvorschläge aus der Mitgliederliste */
+function renderMemberNameOptions(): void {
+  qs('[data-member-names]').replaceChildren(
+    ...[...data.members].sort(byLastName).map((m) => el('option', { value: m.name })),
+  )
+}
+
 function resetPlayForm(): void {
   pForm.reset()
   ;(pForm.elements.namedItem('id') as HTMLInputElement).value = ''
   ;(pForm.elements.namedItem('year') as HTMLInputElement).value = String(new Date().getFullYear())
   gallery = []
+  setCredits([])
   pError.textContent = ''
   qs('[data-play-form-title]').textContent = 'Theaterstück hinzufügen'
   qs('[data-play-submit]').textContent = 'Hinzufügen'
@@ -395,6 +465,7 @@ function editPlay(p: Play): void {
   ;(f.namedItem('title') as HTMLInputElement).value = p.title
   ;(f.namedItem('description') as HTMLTextAreaElement).value = p.description
   gallery = [...p.photos]
+  setCredits(p.credits)
   pError.textContent = ''
   qs('[data-play-form-title]').textContent = 'Theaterstück bearbeiten'
   qs('[data-play-submit]').textContent = 'Speichern'
@@ -427,6 +498,7 @@ pForm.addEventListener('submit', (e) => {
     title,
     description: (f.namedItem('description') as HTMLTextAreaElement).value.trim(),
     photos: [...gallery],
+    credits: readCredits(),
   }
   const plays = id ? data.plays.map((p) => (p.id === id ? entry : p)) : [...data.plays, entry]
   if (persist({ ...data, plays }, id ? 'Stück gespeichert.' : 'Stück hinzugefügt.')) {
@@ -471,6 +543,7 @@ function renderPlays(): void {
         String(p.year),
         `${p.photos.length} Bild${p.photos.length === 1 ? '' : 'er'}`,
         p.description ? 'mit Text' : 'kein Text',
+        `${p.credits.length} Rolle${p.credits.length === 1 ? '' : 'n'}`,
       ]
       return el(
         'li',
@@ -530,6 +603,7 @@ qs('[data-reset]').addEventListener('click', async () => {
 })
 
 function renderAll(): void {
+  renderMemberNameOptions()
   data = loadData()
   resetMemberForm()
   resetPlayForm()

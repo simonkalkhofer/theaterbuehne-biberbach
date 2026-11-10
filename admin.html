@@ -135,9 +135,19 @@
               </div>
               <div class="form-row">
                 <label for="p-desc">Text zum Stück</label>
-                <textarea id="p-desc" name="description" rows="9" maxlength="8000" placeholder="Inhalt, Besetzung, Regie, Aufführungstermine …"></textarea>
+                <textarea id="p-desc" name="description" rows="9" maxlength="8000" placeholder="Worum geht es im Stück? Aufführungstermine …"></textarea>
                 <span class="form-hint">Leerzeile = neuer Absatz. Wird erst auf der Seite des Stücks angezeigt.</span>
               </div>
+              <fieldset class="form-row credit-edit">
+                <legend class="form-label">Rollen &amp; Team</legend>
+                <span class="form-hint">„Rolle“ = Figur im Stück (z. B. Opa Willi), „Team“ = Aufgabe hinter der Bühne (z. B. Regie).</span>
+                <div class="credit-rows" data-credit-rows></div>
+                <div class="form-actions">
+                  <button class="btn btn--ghost btn--small" type="button" data-credit-add="cast">+ Rolle</button>
+                  <button class="btn btn--ghost btn--small" type="button" data-credit-add="crew">+ Team (z. B. Regie)</button>
+                </div>
+                <datalist id="member-names" data-member-names></datalist>
+              </fieldset>
               <div class="form-row">
                 <label for="p-photos">Bilder</label>
                 <input id="p-photos" type="file" accept="image/*" multiple />

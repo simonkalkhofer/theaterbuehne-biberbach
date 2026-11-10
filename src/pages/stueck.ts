@@ -77,6 +77,24 @@ function renderText(play: Play): boolean {
   return paragraphs.length > 0
 }
 
+/** Besetzung (Rollen im Stück) und Team (Regie, Souffleuse …) */
+function renderCredits(play: Play): boolean {
+  const fill = (group: 'cast' | 'crew') => {
+    const items = play.credits.filter((c) => c.group === group)
+    qs(`[data-credits-${group}]`).replaceChildren(
+      ...items.flatMap((c) => [
+        el('dt', { text: c.role || '–' }),
+        el('dd', { text: c.name || 'N. N.' }),
+      ]),
+    )
+    qs(`[data-credits-${group}-col]`).hidden = items.length === 0
+    return items.length
+  }
+  const total = fill('cast') + fill('crew')
+  qs('[data-play-credits-section]').hidden = total === 0
+  return total > 0
+}
+
 async function renderGallery(play: Play): Promise<boolean> {
   const list = qs('[data-play-gallery]')
   objectUrls.forEach((u) => URL.revokeObjectURL(u))
@@ -134,8 +152,9 @@ async function render(): Promise<void> {
   qs('[data-play-title]').textContent = play.title
 
   const hasText = renderText(play)
+  const hasCredits = renderCredits(play)
   const hasImages = await renderGallery(play)
-  qs('[data-play-empty]').hidden = hasText || hasImages
+  qs('[data-play-empty]').hidden = hasText || hasCredits || hasImages
   renderNav(play, data.plays)
   initReveal(qs('#inhalt'))
 

@@ -7,7 +7,7 @@ Vereinswebseite der Theaterbühne Biberbach. Multi-Page-Website (fünf echte HTM
 | `index.html` | Startseite mit animiertem Miniatur-Theater im Hintergrund, Header blendet beim Scrollen ein |
 | `mitglieder.html` | Vorstand (Foto, Name, Funktion, Kontakt) und Mitglieder (Foto, Name) |
 | `archiv.html` | Timeline aller Theaterstücke (Übersicht: nur Jahr + Titel) |
-| `stueck.html?id=…` | Detailseite eines Stücks: Text und Bildergalerie mit Großansicht |
+| `stueck.html?id=…` | Detailseite eines Stücks: Text, Besetzung & Team, Bildergalerie mit Großansicht |
 | `admin.html` | Passwortgeschützte Verwaltung (Link nur im Footer) |
 
 ## Entwicklung
@@ -31,3 +31,4 @@ npm run lint
 - Vite, TypeScript (ohne Framework), GSAP + ScrollTrigger, Lenis
 - Schrift Montserrat, selbst gehostet
 - `graphify-out/`: Code-Wissensgraph (graphify), Überblick in `graphify-out/GRAPH_REPORT.md`
+- `public/demo/`: Platzhalter-Fotos (Unsplash-Lizenz, Quellen in `public/demo/QUELLEN.md`)

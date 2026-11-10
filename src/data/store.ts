@@ -5,6 +5,7 @@
  * Ist dort (noch) nichts gespeichert, werden die Standarddaten unten verwendet.
  * Wichtig: localStorage gilt nur für DIESEN Browser auf DIESEM Gerät.
  */
+import { DEMO_PLAYS, demoPhotos, type DemoPlay } from './demo-plays'
 
 export interface Member {
   id: string
@@ -25,8 +26,20 @@ export interface Play {
   title: string
   /** Text zum Stück – wird erst auf der Detailseite angezeigt */
   description: string
-  /** IDs der Galerie-Bilder im Bild-Speicher (IndexedDB), in Anzeigereihenfolge */
+  /**
+   * Galerie-Bilder in Anzeigereihenfolge: IDs im Bild-Speicher (IndexedDB)
+   * oder Pfade zu mitgelieferten Bildern (z. B. „demo/stueck-2015-1.jpg“)
+   */
   photos: string[]
+  /** Rollen im Stück (cast) und Team hinter der Bühne (crew), z. B. Regie */
+  credits: Credit[]
+}
+
+export interface Credit {
+  /** Rolle im Stück („Opa Willi“) oder Aufgabe („Regie“) */
+  role: string
+  name: string
+  group: 'cast' | 'crew'
 }
 
 /** Datei-Format für Export/Import: Daten + Galerie-Bilder als Data-URLs */
@@ -58,12 +71,13 @@ const member = (id: string, name: string, board = false, role = '', email = ''):
   email,
 })
 
-const play = (year: number, title: string): Play => ({
-  id: `stueck-${year}`,
-  year,
-  title,
-  description: '',
-  photos: [],
+const play = (demo: DemoPlay): Play => ({
+  id: `stueck-${demo.year}`,
+  year: demo.year,
+  title: demo.title,
+  description: demo.description,
+  photos: demoPhotos(demo.year),
+  credits: demo.credits.map((c) => ({ ...c })),
 })
 
 /** Feste ID aus dem Namen, z. B. „Sonja Soxberger“ → „sonja-soxberger“. */
@@ -115,15 +129,7 @@ export function defaultData(): SiteData {
       ...BOARD.map(([name, role]) => member(slug(name), name, true, role)),
       ...MEMBERS.map((name) => member(slug(name), name)),
     ],
-    plays: [
-      play(2015, 'Alptraum einer Schwiegermutter'),
-      play(2016, 'Alibi Bauernhof'),
-      play(2017, 'Männerwirtschaft'),
-      play(2018, 'Gedächtnislücke'),
-      play(2019, 'Opa rockt das Altersheim'),
-      play(2023, 'Natur Pur'),
-      play(2025, 'Letzte Rettung - Erste Hilfe'),
-    ],
+    plays: DEMO_PLAYS.map(play),
   }
 }
 
@@ -151,6 +157,15 @@ export function normalize(value: SiteData): SiteData {
       title: String(p.title ?? '').trim(),
       description: String(p.description ?? '').trim(),
       photos: Array.isArray(p.photos) ? p.photos.filter((x): x is string => typeof x === 'string') : [],
+      credits: Array.isArray(p.credits)
+        ? p.credits
+            .map((c) => ({
+              role: String(c?.role ?? '').trim(),
+              name: String(c?.name ?? '').trim(),
+              group: c?.group === 'crew' ? ('crew' as const) : ('cast' as const),
+            }))
+            .filter((c) => c.role || c.name)
+        : [],
     })),
   }
 }
@@ -160,7 +175,7 @@ export function loadData(): SiteData {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (raw) {
       const parsed: unknown = JSON.parse(raw)
-      if (isSiteData(parsed)) return upgradePlaceholderMembers(normalize(parsed))
+      if (isSiteData(parsed)) return fillEmptyDemoPlays(upgradePlaceholderMembers(normalize(parsed)))
     }
   } catch {
     // localStorage nicht verfügbar oder Daten beschädigt → Standarddaten
@@ -178,6 +193,26 @@ function upgradePlaceholderMembers(data: SiteData): SiteData {
     data.members.length > 0 && data.members.every((m) => /^(name folgt|mitglied \d+)$/i.test(m.name))
   return onlyPlaceholders ? { ...data, members: defaultData().members } : data
 }
+
+/**
+ * Stücke aus den Standarddaten, die im Browser noch ganz leer gespeichert sind
+ * (kein Text, keine Bilder, keine Rollen), bekommen die Demo-Inhalte.
+ * Was der Admin schon eingetragen hat, bleibt unangetastet.
+ */
+function fillEmptyDemoPlays(data: SiteData): SiteData {
+  const defaults = new Map(defaultData().plays.map((p) => [p.id, p]))
+  return {
+    ...data,
+    plays: data.plays.map((p) => {
+      const demo = defaults.get(p.id)
+      const empty = !p.description && p.photos.length === 0 && p.credits.length === 0
+      return demo && empty ? { ...p, description: demo.description, photos: demo.photos, credits: demo.credits } : p
+    }),
+  }
+}
+
+/** Mitgelieferte Bilddatei (Pfad/URL) statt ID im Bild-Speicher? */
+export const isStaticImage = (ref: string): boolean => /\.(jpe?g|png|webp)$/i.test(ref) || ref.includes('/')
 
 /** Nachname = letztes Wort des Namens (für alphabetische Sortierung). */
 export const lastName = (name: string): string => name.trim().split(/\s+/).pop() ?? name
