@@ -375,6 +375,15 @@ html.lenis body {
   color: var(--grey-40);
 }
 
+.hero__punchline {
+  margin-top: 0.4rem;
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #e6e6e6;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
 .hero__scroll {
   position: absolute;
   bottom: clamp(1.5rem, 4vh, 2.5rem);
