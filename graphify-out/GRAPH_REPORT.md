@@ -1,7 +1,7 @@
 # Graph Report - Theaterbuehne-Biberbach  (2026-11-10)
 
 ## Corpus Check
-- 21 files · ~11,512 words
+- 21 files · ~11,485 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 4 file(s) not represented in the graph (top: (none) 2, .ico 1, .css 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b8f53a4f`
+- Built from commit: `ac3ef7f1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -48,9 +48,9 @@
   CLAUDE.md → src/lib/dom.ts
 - `Effekte (Stand)` --references--> `drawActor()`  [INFERRED]
   CLAUDE.md → src/lib/stage.ts
-- `Aufbau` --references--> `el()`  [INFERRED]
-  CLAUDE.md → src/lib/dom.ts
 - `Aufbau` --references--> `prefersReducedMotion()`  [INFERRED]
+  CLAUDE.md → src/lib/dom.ts
+- `Aufbau` --references--> `el()`  [INFERRED]
   CLAUDE.md → src/lib/dom.ts
 
 ## Import Cycles

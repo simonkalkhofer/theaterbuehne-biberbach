@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1794330012.0,
-    "seen": 1794330081.7885034,
-    "ast_hash": "dc99fe91d5281b5ed6acc0b43f860497",
+    "mtime": 1794332008.0,
+    "seen": 1794332024.5553303,
+    "ast_hash": "f21f1836a4eb9c85054cfb699a42e88d",
     "semantic_hash": ""
   },
   ".claude/launch.json": {
@@ -126,9 +126,9 @@
     "semantic_hash": ""
   },
   "src/pages/home.ts": {
-    "mtime": 1794330016.0,
-    "seen": 1794330081.788483,
-    "ast_hash": "3db5b243ecbcc76758a9326104139ab9",
+    "mtime": 1794332008.0,
+    "seen": 1794332024.5553067,
+    "ast_hash": "b184aee9b3d577da4d8a34cea584f04c",
     "semantic_hash": ""
   },
   "src/pages/mitglieder.ts": {

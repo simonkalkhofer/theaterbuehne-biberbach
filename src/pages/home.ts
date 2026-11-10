@@ -25,7 +25,6 @@ if (!reduced) {
     .to(curtain, { open: 1, duration: 2, ease: 'power3.inOut' })
     .from('.hero__logo', { opacity: 0, scale: 0.92, duration: 1, ease: 'power3.out' }, '-=1.1')
     .from(slogan.words, { yPercent: 110, duration: 0.9, ease: 'power4.out', stagger: 0.08 }, '-=0.6')
-    .from('.hero__sub', { opacity: 0, y: 20, duration: 0.8, ease: 'power3.out' }, '-=0.5')
     // .hero__scroll ist per CSS zentriert (translateX) → nur einblenden
     .from('.hero__scroll', { opacity: 0, duration: 0.8 }, '-=0.4')
 

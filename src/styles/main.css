@@ -352,8 +352,9 @@ html.lenis body {
 }
 
 .hero__logo {
-  width: min(62vw, 420px);
-  margin: 0 auto clamp(1rem, 3vh, 2rem);
+  /* nur das Logo-Zeichen, ohne Schriftzug */
+  width: clamp(96px, 16vw, 160px);
+  margin: 0 auto clamp(1rem, 3vh, 1.75rem);
 }
 
 .hero__slogan {
