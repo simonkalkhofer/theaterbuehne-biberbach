@@ -10,7 +10,13 @@ const reduced = prefersReducedMotion()
 
 // --- Miniatur-Theater im Hero: Vorhang öffnet sich beim Laden ---------------
 const curtain = { open: reduced ? 1 : 0 }
-startStage(qs<HTMLCanvasElement>('.hero__canvas'), { reducedMotion: reduced, curtain })
+startStage(qs<HTMLCanvasElement>('.hero__canvas'), {
+  reducedMotion: reduced,
+  curtain,
+  // der obere Vorhang ist der fixierte Seiten-Header (siehe index.html)
+  valance: false,
+  headerHeight: qs('[data-header]').offsetHeight + 12,
+})
 
 if (!reduced) {
   const slogan = SplitText.create('.hero__slogan', { type: 'words', mask: 'words' })
@@ -32,12 +38,13 @@ if (!reduced) {
   })
 }
 
-// --- Kopfzeile: im Hero eingeklappt, beim Scrollen einblenden ----------------
+// --- Kopfzeile = oberer Bühnenvorhang; Logo + Menü erscheinen beim Scrollen ----
 const header = qs('[data-header]')
+const headerInner = qs('[data-header-inner]')
 
 function setHeaderVisible(visible: boolean): void {
-  header.classList.toggle('site-header--hidden', !visible)
-  header.toggleAttribute('inert', !visible)
+  header.classList.toggle('is-scrolled', visible)
+  headerInner.toggleAttribute('inert', !visible)
 }
 
 ScrollTrigger.create({

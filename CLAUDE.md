@@ -62,7 +62,7 @@ Neue Skills nur nach SkillSpector-Prüfung laut `G:\Claude\CLAUDE.md`.
 - `src/data/images.ts` – Galerie-Bilder als Blobs in IndexedDB (`tbb-images`); `Play.photos` = Bild-IDs.
   Export/Import packt die Bilder als Data-URLs in die JSON-Datei.
 - `src/lib/image.ts` – Foto-Verkleinerung; `src/lib/dom.ts` – `el()`, `qs()`, `prefersReducedMotion()`
-- Logo-Varianten: `src/assets/logos/logo-light.png` (weiß, transparent), `logo-dark.png`, Original-JPG
+- Logo-Varianten: `src/assets/logos/logo-light.png` (weiß, transparent), `logo-dark.png`, `logo-mark-light.png` (nur Zeichen, ohne Schrift), Original-JPG
 - Admin: Passwortschutz nur clientseitig (SHA-256-Hash in `src/pages/admin.ts`) – **kein echter Schutz**;
   Daten liegen nur im Browser des Admins. Für echte, für alle sichtbare Pflege wird ein Backend/CMS nötig.
 
@@ -71,6 +71,8 @@ Neue Skills nur nach SkillSpector-Prüfung laut `G:\Claude\CLAUDE.md`.
 | Wo | Effekt | Code |
 |---|---|---|
 | Startseite | Bühnenvorhang öffnet sich, Logo/Slogan (SplitText-Wörter) erscheinen | `home.ts` Timeline |
+| Startseite | Header = oberer Bühnenvorhang (Lambrequin, fixiert); Logo-Zeichen + Menü erscheinen beim Scrollen | `index.html` `.site-header--valance`, `home.ts` |
+| Startseite | Bühnenfiguren im Stil der Logo-Figuren (schwebender Kopf, Körper mit Torbogen) | `stage.ts` `drawActor()` |
 | Startseite | Hero-Text schwebt beim Scrollen weg; Jahreszahl-Parallax; Zahlen zählen hoch | `home.ts` |
 | Alle Seiten | Theatervorhang schließt/öffnet beim Seitenwechsel (Sicherheits-Timeouts!) | `effects.ts` |
 | Alle Seiten | `[data-reveal]` blendet ein, `[data-split]`-Überschriften gleiten zeilenweise herein | `common.ts`, `effects.ts` |

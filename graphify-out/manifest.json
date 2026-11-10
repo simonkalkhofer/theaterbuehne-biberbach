@@ -36,9 +36,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1793979726.0,
-    "seen": 1793979742.097076,
-    "ast_hash": "d93f196bfcb011e13d42ec61fea506f2",
+    "mtime": 1794330078.0,
+    "seen": 1794330081.7884958,
+    "ast_hash": "d6542dbef43fa105f23ccbf49e3ff84b",
     "semantic_hash": ""
   },
   "README.md": {
@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1793979494.0,
-    "seen": 1793979742.0970833,
-    "ast_hash": "1e8366217f3daf06ad3427d99420b0bd",
+    "mtime": 1794330012.0,
+    "seen": 1794330081.7885034,
+    "ast_hash": "dc99fe91d5281b5ed6acc0b43f860497",
     "semantic_hash": ""
   },
   ".claude/launch.json": {
@@ -126,9 +126,9 @@
     "semantic_hash": ""
   },
   "src/pages/home.ts": {
-    "mtime": 1793979534.0,
-    "seen": 1793979742.0970612,
-    "ast_hash": "c06fcb557e2e3eb6e83dc9eea36ea3db",
+    "mtime": 1794330016.0,
+    "seen": 1794330081.788483,
+    "ast_hash": "3db5b243ecbcc76758a9326104139ab9",
     "semantic_hash": ""
   },
   "src/pages/mitglieder.ts": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/lib/stage.ts": {
-    "mtime": 1793979608.0,
-    "seen": 1793979742.0970545,
-    "ast_hash": "55c4a686a2de602c93e1e4d52fbd1bbf",
+    "mtime": 1794329970.0,
+    "seen": 1794330081.7884762,
+    "ast_hash": "9f42f88d01304ef5fa8bfe282cf61731",
     "semantic_hash": ""
   },
   "src/data/images.ts": {
@@ -195,6 +195,12 @@
     "mtime": 1793979692.0,
     "seen": 1793979742.0970502,
     "ast_hash": "5ac1f4d16ecc1210007f1c11468a2355",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/logo-mark-light.png": {
+    "mtime": 1794329980.0,
+    "seen": 1794330081.7885354,
+    "ast_hash": "15cc57558957efef2c57687bd7e358ef",
     "semantic_hash": ""
   },
   "package-lock.json": {

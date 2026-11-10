@@ -18,8 +18,6 @@ interface Actor {
   timer: number
   phase: number
   costume: string
-  dress: boolean
-  hat: 'none' | 'top' | 'cap'
   size: number
   line: string
 }
@@ -36,6 +34,10 @@ interface Options {
   reducedMotion?: boolean
   /** Vorhang-Zustand (0 = geschlossen, 1 = offen) – kann von außen per GSAP animiert werden */
   curtain?: { open: number }
+  /** false: oberen Vorhang (Lambrequin) nicht zeichnen – übernimmt der Seiten-Header */
+  valance?: boolean
+  /** Höhe des Headers in px, wenn valance = false (Scheinwerfer hängen darunter) */
+  headerHeight?: number
 }
 
 const RED = '#e62b34'
@@ -94,9 +96,8 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
       timer: rand(1, 4),
       phase: rand(0, Math.PI * 2),
       costume: i === 0 ? RED : pick(costumes),
-      dress: Math.random() < 0.4,
-      hat: pick(['none', 'none', 'top', 'cap'] as const),
-      size: rand(0.9, 1.1),
+      // wie im Logo: mal die kleinere, mal die größere Figur
+      size: i % 2 ? rand(1.08, 1.2) : rand(0.85, 0.98),
       line: pick(LINES),
     }))
   }
@@ -196,7 +197,7 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
     c.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     g.curtainW = Math.max(36, Math.min(W * 0.13, 190))
-    g.valanceH = Math.max(40, H * 0.09)
+    g.valanceH = opts.valance === false ? (opts.headerHeight ?? 72) : Math.max(40, H * 0.09)
     g.floorTop = H * 0.66
     g.floorFront = H * 0.94
     g.backL = g.curtainW * 1.4
@@ -245,113 +246,64 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
     c.restore()
   }
 
+  /**
+   * Figur im Stil des Logos: runder, frei schwebender Kopf über einem Körper,
+   * der oben abgerundet ist und unten einen Torbogen (Beine) hat – wie die
+   * beiden Figuren, die im Logo das „B“ bilden. Keine Arme, keine Gesichter.
+   */
   function drawActor(a: Actor) {
     const p = project(a.x, a.t)
     const unit = Math.max(28, Math.min(H * 0.13, W * 0.11, 120)) * p.scale * a.size
     const x = p.sx
     const y = p.sy
     const walking = a.state === 'walk'
+    const talking = a.state === 'talk'
     const swing = walking ? Math.sin(a.phase) : 0
-    const bob = walking ? Math.abs(Math.cos(a.phase)) * unit * 0.03 : 0
-    const bow = a.state === 'bow' ? Math.sin(Math.min(1, (2.2 - a.timer) / 0.6) * Math.PI) * 0.6 : 0
+    const bob = walking ? Math.abs(Math.cos(a.phase)) * unit * 0.05 : 0
+    const bow = a.state === 'bow' ? Math.sin(Math.min(1, (2.2 - a.timer) / 0.6) * Math.PI) * 0.55 : 0
+
+    const bw = unit * 0.46 // Körperbreite
+    const bh = unit * 0.62 // Körperhöhe
+    const r = unit * 0.13 // Kopfradius
+    const archW = bw * 0.36
+    const archH = bh * 0.48
 
     // Schatten
     c.fillStyle = 'rgba(0, 0, 0, 0.45)'
     c.beginPath()
-    c.ellipse(x, y, unit * 0.28, unit * 0.07, 0, 0, Math.PI * 2)
+    c.ellipse(x, y, bw * 0.7, unit * 0.07, 0, 0, Math.PI * 2)
     c.fill()
 
     c.save()
     c.translate(x, y - bob)
     c.scale(a.dir, 1)
-    c.lineCap = 'round'
-    c.lineJoin = 'round'
+    // Watscheln beim Gehen bzw. Verbeugung – Drehpunkt am Boden
+    c.rotate(swing * 0.07 + bow)
 
-    const hipY = -unit * 0.42
-    const shoulderY = -unit * 0.8
-    const legLen = unit * 0.42
-    const limb = Math.max(2, unit * 0.075)
-
-    // Beine
-    c.strokeStyle = '#1a1a1a'
-    c.lineWidth = limb
-    for (const sgn of [1, -1]) {
-      const ang = swing * 0.5 * sgn
-      c.beginPath()
-      c.moveTo(0, hipY)
-      c.lineTo(Math.sin(ang) * legLen, hipY + Math.cos(ang) * legLen)
-      c.stroke()
-    }
-
-    // Oberkörper (für Verbeugung um die Hüfte gedreht)
-    c.translate(0, hipY)
-    c.rotate(bow)
-    c.translate(0, -hipY)
-
+    // Körper mit Torbogen (evenodd → Bogen bleibt durchsichtig wie im Logo)
     c.fillStyle = a.costume
     c.beginPath()
-    if (a.dress) {
-      c.moveTo(-unit * 0.1, shoulderY)
-      c.lineTo(unit * 0.1, shoulderY)
-      c.lineTo(unit * 0.22, hipY + unit * 0.12)
-      c.lineTo(-unit * 0.22, hipY + unit * 0.12)
-    } else {
-      c.roundRect(-unit * 0.13, shoulderY, unit * 0.26, hipY - shoulderY + unit * 0.04, unit * 0.06)
-    }
+    c.roundRect(-bw / 2, -bh, bw, bh, [bw * 0.48, bw * 0.48, 0, 0])
+    c.moveTo(-archW / 2, 0)
+    c.lineTo(-archW / 2, -archH + archW / 2)
+    c.arc(0, -archH + archW / 2, archW / 2, Math.PI, 0)
+    c.lineTo(archW / 2, 0)
     c.closePath()
-    c.fill()
+    c.fill('evenodd')
 
-    // Arme
-    c.strokeStyle = a.costume
-    c.lineWidth = limb
-    const armLen = unit * 0.34
-    const talking = a.state === 'talk'
-    const gesture = talking ? Math.sin(time * 6 + a.phase) * 0.5 : 0
-    const arms: [number, number][] = talking
-      ? [
-          [-1.9 + gesture, 1],
-          [0.3, -1],
-        ]
-      : [
-          [swing * 0.6, 1],
-          [-swing * 0.6, -1],
-        ]
-    for (const [ang] of arms) {
-      c.beginPath()
-      c.moveTo(0, shoulderY + unit * 0.04)
-      c.lineTo(Math.sin(ang) * armLen, shoulderY + unit * 0.04 + Math.cos(ang) * armLen)
-      c.stroke()
-    }
-
-    // Kopf
-    const headR = unit * 0.11
-    const headY = shoulderY - headR * 1.15
-    c.fillStyle = '#f1e4d6'
+    // Kopf schwebt mit Abstand über dem Körper; wippt beim Gehen leicht nach
+    const nod = talking ? Math.sin(time * 9 + a.phase) * unit * 0.035 : 0
+    const lag = walking ? Math.sin(a.phase + 0.9) * unit * 0.025 : 0
+    const headY = -bh - r * 0.55 - r + nod + lag
     c.beginPath()
-    c.arc(0, headY, headR, 0, Math.PI * 2)
+    c.arc(r * 0.18, headY, r, 0, Math.PI * 2)
     c.fill()
-    // Nase zeigt Blickrichtung
-    c.beginPath()
-    c.arc(headR * 0.9, headY, headR * 0.22, 0, Math.PI * 2)
-    c.fill()
-
-    // Hut
-    c.fillStyle = '#111'
-    if (a.hat === 'top') {
-      c.fillRect(-headR * 1.3, headY - headR * 0.85, headR * 2.6, headR * 0.3)
-      c.fillRect(-headR * 0.8, headY - headR * 2.1, headR * 1.6, headR * 1.3)
-    } else if (a.hat === 'cap') {
-      c.beginPath()
-      c.arc(0, headY - headR * 0.2, headR * 1.02, Math.PI, 0)
-      c.fill()
-      c.fillRect(0, headY - headR * 0.35, headR * 1.6, headR * 0.3)
-    }
     c.restore()
 
     // Sprechblase
     if (talking) {
       const bx = x + a.dir * unit * 0.25
-      const by = y - unit * 1.32
+      const by = y - unit * 1.12 * a.size
       const fs = Math.max(10, unit * 0.2)
       c.font = `800 ${fs}px 'Montserrat Variable', sans-serif`
       const tw = c.measureText(a.line).width
@@ -409,7 +361,8 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
       c.restore()
     }
 
-    // Lambrequin (oberer Vorhang) mit Bögen
+    // Lambrequin (oberer Vorhang) mit Bögen – entfällt, wenn der Header ihn darstellt
+    if (opts.valance === false) return
     const vh = g.valanceH
     const top = c.createLinearGradient(0, 0, 0, vh)
     top.addColorStop(0, '#6e0b11')
