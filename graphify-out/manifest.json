@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/lib/stage.ts": {
-    "mtime": 1794331812.0,
-    "seen": 1794331840.1650612,
-    "ast_hash": "85648c3f546d04e8280aa8156562bc00",
+    "mtime": 1794331916.0,
+    "seen": 1794331930.6408446,
+    "ast_hash": "94119b34d4be0fe3ebb144738357574e",
     "semantic_hash": ""
   },
   "src/data/images.ts": {

@@ -270,7 +270,7 @@ export function startStage(canvas: HTMLCanvasElement, opts: Options = {}): () =>
     const r = bw * 0.26 // Kopfradius
     const gap = r * 0.95 // Abstand Kopf ↔ Körper
     const winW = bw * 0.44 // Fensterbreite
-    const winBottom = -bh * 0.31 // Unterkante Fenster (darunter geschlossener Rocksaum)
+    const winBottom = -bh * 0.15 // Unterkante Fenster (darunter schmaler, geschlossener Rocksaum)
     const winTop = -bh * 0.67 // Oberkante Fenster
 
     // Schatten
